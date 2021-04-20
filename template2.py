@@ -17,6 +17,7 @@
 """
 
 ###### 1. Commenting. ######
+
 """
   Commenting is an important part of good code. It should not be overdone, but it should
   also help a reader of your code understand what is going on.
@@ -226,8 +227,8 @@ else:
 # C) Now let's use multiple control statements in a single if (i.e. if x<y and x>z etc.)
 
 print( 'EXERCISE 7C' )
-
-
+if x == z*y and x/z == y:
+    print(True)
 
 """
   ###### 8 lists, dictionaries, and tuples ######
@@ -245,15 +246,19 @@ print( 'EXERCISE 7C' )
 
 # empty list
 print( 'EXERCISE 8A-1' )
-
+note = list()
+print("Done.")
 # 8A-2 lists with something in them... use the [] brackets and create 2 lists with at least three elements in them.
 # l = [1,2,3]
 print( 'EXERCISE 8A-2' )
-
+note = [3]
+note.insert(0, 1)
+note.append(2)
+print(note)
 # A handly method with lists  is the ability to create a list with N of the same elements
 # x = [3]*3 try it now with either strings, floats or ints
-
-
+note = note * 3
+print(note)
 # 8A-3 lists also come with some inbuilt methods that do various things.
 # lst[0] gets the 0th element, keeping in mind that this is the first element.
 #       we can substitute 0 for any index that exists within the list.
@@ -265,6 +270,10 @@ print( 'EXERCISE 8A-2' )
 
 print( 'EXERCISE 8A-3' )
 
+note.insert(0, 1)
+note.append(2)
+note.sort()
+print(note)
 
 ####### 8B basics of a dictionary
 # Dictionaries are another inbuilt storage class. However, instead of using an index in the same way that lists do
@@ -273,6 +282,10 @@ print( 'EXERCISE 8A-3' )
 # the dict(). Try it now.
 
 print( 'EXERCISE 8B-1' )
+dit = dict()
+dit1 = {}
+print(dit == dit1)
+
 
 # 8B-2 the interesting thing about dictionaries is that the key can be a string or a number.
 # {'first':1, 2:2, 'three':'dog'} you can see in this example that I have used either a string or a number.
@@ -280,6 +293,8 @@ print( 'EXERCISE 8B-1' )
 # You try this, create a dictionary with at least three key:value pairs.
 
 print( 'EXERCISE 8B-2')
+dit = {1:"cool",2:"notcool"}
+print(dit)
 
 # 8B-3 In much the same way as lists we can alter dictionaries.
 # dit[key] where key is one of the keys in the dictionary will return that value in the key:value pairs.
@@ -291,10 +306,16 @@ print( 'EXERCISE 8B-2')
 # Try each of these in turn.
 
 print( 'EXERCISE 8B-3' )
+print(dit[1])
+print("Pop:", dit.pop(2))
+dit[1] = "new"
+print(dit[1])
+dit[1] = "new"
+print(dit)
 
 ###### 8C basics of a tuple # immutable
 # Tuples are the final inbuilt storage object we will be teaching you here.
-# they are very similar to lists apart from one very key difference. Once they are created you can not easisly alter them.
+# they are very similar to lists apart from one very key difference. Once they are created you can not easily alter them.
 # This is a very handy property of tuples at different times so keep it in mind.
 # 8C-1 Create an empty tuple. (This isn't overly practical but it's good to know)
 # like lists and dictionaries you can create emtpy objects with list() or ()
@@ -302,28 +323,38 @@ print( 'EXERCISE 8B-3' )
 # Create empty tuples
 
 print( 'EXERCISE 8c-1' )
-
+emptytuple = tuple() # or ()
+print(type(emptytuple))
 # 8C-2 Now let's create tuples.
 # First thing to keep in mind if you want a single item tuple you need to insert a comma after the first variable.
 # If you don't do this it will just return a string, float, integer, etc. Try it now.
 
 print( 'EXERCISE 8C-2' )
-
+tpl = (2)
+print(type(tpl))
 # 8C-3 Now let's create a tuple with at least 3 elements. Again you can put whatever you want in there.
 
 print( 'EXERCISE 8C-3' )
+tpl = (1,2,3)
+print(tpl)
 
 # 8C-4 Finally, like previously mentioned you can not directly manipulate a list. Try it using the same ways that we tried
 # with lists and dictionaries?
 # If you want to manipulate a tuple you need to convert it to a list first
 # lst = list( tup )
-# lst**do manips
+# lst**do manipulations
 # tup = tuple( lst )
 # Obviously not very convenient and if you plan on manipulating a tuple maybe it's better to use a list?
 # the only thing that still works is accessing a tuple index (just can't change it):
 
 
 print( 'EXERCISE 8C-4' )
+print(tpl.index(3))
+lst = list(tpl)
+print(tpl)
+print(lst)
+lst.pop(1)
+print(tuple(lst))
 
 """
   ###### 9 basics of numpy ######
@@ -341,6 +372,7 @@ print( 'EXERCISE 8C-4' )
 # Either way let's import it now.
 
 
+
 # 9A Creating vectors and matrices from a list
 # The first way that we will learn to create a matrix array is from a list.
 # create a vector of length N
@@ -350,37 +382,54 @@ print( 'EXERCISE 8C-4' )
 # keep in mind that the list should contain numbers in this case...
 
 print( 'EXERCISE 9A' )
+import numpy
+def random_vec(n, value_range):
+    lst = [random.randrange(1, value_range, 1) for i in range(n)]
+    vec = numpy.array(lst)
+    return vec
+print(random_vec(100,100))
 
 # now we will create a matrix
 # So the above only had a single dimension, but sometimes we want to work with matrices.
 # i.e both a row and a column dimension. We can do that using a list by simply adding the second
 # dimension as a set of [] brackets
-# x = np.array( [[1,2,3]] ) print out the shape too?
 
+# x = np.array( [[1,2,3]] ) print out the shape too?
+print(numpy.array([random_vec(100,100)]))
 
 # what about if I want the dimensionality switched? How do we do that? [[],...,[]]
+vec = numpy.array([random_vec(100,100),random_vec(100,100),random_vec(100,100),random_vec(100,100)])
+print("Four random vectors as array: \n", vec)
 
+print("vec * vec: \n", random_vec(100,100) * random_vec(100,100))
 
 # you can also do this with the x.T operator (transpose)
+print("Transposed:\n", vec.transpose())
 
 
 # what if we want a 3x3 dimension matrix?
 # see if you can work that out using the above formation?
-
-
+mat = numpy.array([[1,2,3]]*3)
+print(mat)
 # And can we manipulate these arrays?
 # we can access these in the same way we would access a normal matrix: x[row,col]
 # we can display the values and print the values. Try this with all three of your np arrays, keep in mind the first
 # one was a vector...
-
-
+mat[1,2] = 5
+print(mat)
 # what happens if you created a matrix/vector of integers but now you want to insert a floating point number? Try it
-
+mat[1,2] = 5.125
+print("No change after inserting a float:\n",mat)
 
 # how do we fix that?
-
+mat = numpy.array([[1.,2,3]]*3)
+mat[1,2] = 5.125
+print("Create new Matrix:\n", mat)
 
 # or alternatively change the type?
+mat = mat.astype(float)
+mat[1,2] = 5.125
+print("Or better, change type:\n", mat)
 
 
 ## 9B mathematical operations.
@@ -389,25 +438,42 @@ print( 'EXERCISE 9A' )
 # try to perform basic value math on what you created.
 
 print( 'EXERCISE 9b')
-
+mat = mat * 5
+print("Matrix * 5:\n", mat)
+print("mat / 2 + 12:\n", mat / 2 + 12)
 
 ## 9C matrix operations.
 #  numpy can also work with matrices and vectors for vector operations.
 # things like multiplication, and dot product are there, along with sum, mean, max, min operators.
-# first let's use multiplcation on the previous matrices, remember dimensions have to hold so if
+# first let's use multiplication on the previous matrices, remember dimensions have to hold so if
 # you need to create new ones do it now.
+
 print( 'EXERCISE 9C' )
+mat0 = (mat + 2.5)**2 * 1.43
+mat1 = (mat / 0.2 + 2) * 6
+print("+\n", mat0+mat1)
+print("-\n", mat0-mat1)
+print("*\n", mat0*mat1)
+print("/\n", mat0/mat1)
 
 
 # We can also perform row or column wise operations.
-# In this case x[3,3] and y[1,3]or[3,1] what happens if we perform mathemtaical operations on x using y?
+# In this case x[3,3] and y[1,3]or[3,1] what happens if we perform mathematical operations on x using y?
 # Try an array of both [1,3] and [3,1] what happens? What do you see?
-
+mat0 = numpy.array([[1,2,3]])
+mat1 = numpy.array([[1],[2],[3]])
+mat2 = mat0 * mat1
+print(mat2)
 
 # You can do this with all the maths operations. This is handy knowledge to have in your toolkit for later.
 # now let's look at the dot product
 # mo (1x3) m2 (3x3) output should be 1x3
 # d = np.dot( mat0, mat1 )
+vec = [1,2,3]
+vec1 = [3,2,1]
+print("Dot product (1x3 * 1x3):\n", numpy.dot(vec, vec))
+print("Dot product(3x3 * 1x3):\n", numpy.dot(mat2, vec))
+print("Cross product:\n", numpy.cross(vec,vec1))
 
 
 # there are a number of other functions available. You can find these by researching the numpy site or just using google
@@ -417,6 +483,9 @@ print( 'EXERCISE 9C' )
 # x = mat.min() # the minimum value in the matrix
 # x = mat.max() # the maximum value in the matrix.
 # Try them out now.
-
+print("Mean: ", mat2.mean())
+print("Sum: ", mat2.sum())
+print("Min: ", mat2.min())
+print("Max: ", mat2.max())
 
 # Any Questions?
