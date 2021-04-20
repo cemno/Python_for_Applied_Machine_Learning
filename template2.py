@@ -255,7 +255,7 @@ note = [3]
 note.insert(0, 1)
 note.append(2)
 print(note)
-# A handly method with lists  is the ability to create a list with N of the same elements
+# A handy method with lists  is the ability to create a list with N of the same elements
 # x = [3]*3 try it now with either strings, floats or ints
 note = note * 3
 print(note)
