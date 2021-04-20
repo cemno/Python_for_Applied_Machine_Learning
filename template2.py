@@ -18,7 +18,7 @@
 
 ###### 1. Commenting. ######
 """
-  Commenting is an imporant part of good code. It should not be overdone, but it should
+  Commenting is an important part of good code. It should not be overdone, but it should
   also help a reader of your code understand what is going on.
 
   Using the three " is actually creating a string that can go over multiple lines, we
@@ -41,7 +41,7 @@
 """
 # A)  Your first task is to print Hello World! again using either " or '
 
-#print()
+print("Hello world")
 
 # B)  Can you separate the words and print them individually?
 #     Below is the print function
@@ -52,12 +52,12 @@
 #     From this try and use multiple inputs to the print function i.e. print( 'hello', 'world!' ).
 #     what is the result?
 
-#print()
+print('hello', 'world!')
 
 #     Now let's try with a different separator, try whatever you like,
 #     print( "hello", "world!", sep='+' )
 
-#print()
+print('hello', 'world!', sep = '+')
 
 
 # C)  Can we print other things other than strings?
@@ -69,7 +69,7 @@
 
 #     now try and print a string, an integer, and a float in the same print function.
 
-#print() # string, int, float
+print('fünf', 5, 5.0) # string, int, float
 
 """
   ###### 3. Creating Variables ######
@@ -90,10 +90,14 @@
 #     You can create any number of these, an example: str0 = 'Hello'
 
 print( 'EXERCISE 3A')
-
+str0 = "Hello"
+a = 5
+b = 5.0
+print("Done.")
 # B)  Now can you print these variables??
 
 print( 'EXERCISE 3B' )
+print(str0, a, b)
 
 """
   ###### 4. Arithmetic ######
@@ -109,6 +113,7 @@ print( 'EXERCISE 3B' )
 
 print( 'EXERCISE 4A')
 
+print(a**b)
 
 # B)  Try to use variables in these expressions.
 #     i.e. x = 13
@@ -117,6 +122,11 @@ print( 'EXERCISE 4A')
 #          print( z )
 
 print( 'EXERCISE 4B')
+x = 13
+y = 3
+z = x//y
+print(z)
+
 
 """
   ###### 5. boolean operators ######
@@ -127,7 +137,9 @@ print( 'EXERCISE 4B')
 #    Create a variable of each value and print them too.
 
 print( 'EXERCISE 5A')
-
+t = True
+f = False
+print(t, "or", f)
 # B) Creating from statements.
 # you can also create booleans by using statements that would create a true or false situation.
 # this can include bool_var = 5 > 4
@@ -143,6 +155,7 @@ print( 'EXERCISE 5A')
 # Using the above statements to output True or False values based on these variables.
 
 print( 'EXERCISE 5B')
+print(x==y)
 
 """
   ###### 6. and or operations ######
@@ -156,7 +169,11 @@ print( 'EXERCISE 5B')
 #    print the output.
 
 print( 'EXERCISE 6A' )
-
+x = 10
+y = 5
+z = 2
+print("x == z*y and x/z == y: ", x == z*y and x/z == y+1)
+print("x == z*y and x/z == y: ", x == z*y and x/z == y)
 
 # B) the 'not' operator: essentially converts a False to a True
 # x and not y means that if y is False then it becomes True
@@ -164,7 +181,8 @@ print( 'EXERCISE 6A' )
 # Use the variables from 6A and create a variable using the not operator
 
 print( 'EXERCISE 6B' )
-
+print("x == z*y and not x/z == y: ", x == z*y and not x/z == y)
+print("x == z*y and not x/z == y: ", x == z*y and not x/z != y)
 """
   ###### 7. the if statement ######
 """
@@ -189,15 +207,27 @@ print( 'EXERCISE 6B' )
 #    (i.e. don't worry about elif or else):
 
 print( 'EXERCISE 7A' )
+if x == y * z:
+    print(True)
 
 # B) Now use the same control statement and create an elif and else to go with it.
 # play around with this so it goes into the different parts of the if statement.
 
 print( 'EXERCISE 7B' )
+import random
+schroedinger = random.randint(0,2)
+if schroedinger == 1:
+    print(True)
+elif schroedinger == 0:
+    print(False)
+else:
+    print("None")
 
 # C) Now let's use multiple control statements in a single if (i.e. if x<y and x>z etc.)
 
 print( 'EXERCISE 7C' )
+
+
 
 """
   ###### 8 lists, dictionaries, and tuples ######
