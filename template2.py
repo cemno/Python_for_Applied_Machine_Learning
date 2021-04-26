@@ -463,7 +463,9 @@ print("/\n", mat0/mat1)
 mat0 = numpy.array([[1,2,3]])
 mat1 = numpy.array([[1],[2],[3]])
 mat2 = mat0 * mat1
-print(mat2)
+print("mat0: ", mat0)
+print("mat0: ", mat1)
+print("mat0 * mat1 = ", mat2)
 
 # You can do this with all the maths operations. This is handy knowledge to have in your toolkit for later.
 # now let's look at the dot product
