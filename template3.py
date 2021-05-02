@@ -79,11 +79,14 @@ print("{} test {} {} {}" .format("string", 1212, 3.14, 0.001))
 # in this case we would output >>> '1212 3.14' note that the index has told it
 # Try it yourself
 
+print("{1:} {0:0.02f} {2:06}".format(3.14159, 1212, 546))
+
 
 # to look at a certain place. This is not necessary, and to be honest I have never
 # found it overly helpful. Just put the values in .format() in the right order?
 # Can you think of a case where it might help?
 
+# no
 
 # Overall you can pick the version you find easier.
 
