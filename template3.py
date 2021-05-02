@@ -86,7 +86,7 @@ print("{1:} {0:0.02f} {2:06}".format(3.14159, 1212, 546))
 # found it overly helpful. Just put the values in .format() in the right order?
 # Can you think of a case where it might help?
 
-# no
+# faster insertion or shifting in long statements
 
 # Overall you can pick the version you find easier.
 
@@ -102,18 +102,37 @@ print("{1:} {0:0.02f} {2:06}".format(3.14159, 1212, 546))
 # benefit and a pitfall i.e. what happens if we never change the condition...
 # Infinite loop.
 # let's do a simple condition to show this behaviour while x > y
-# let x make x = 10 and y = 0 and c = 1 as a strating point
+# let x make x = 10 and y = 0 and c = 1 as a starting point
 # then within the while loop print out y then add c to the y.
 # how long does the loop go for?
 
+x = 10
+y = 0
+c = 1
+while x > y:
+    print(y)
+    y += c
 
 # now change c to 0.1 and see what happens? Don't forget to reset y!!
+
+x = 10
+y = 0
+c = 0.1
+while x > y:
+    print(round(y, 2))
+    y += c
 
 
 # now let's change c to -1 and see what happens? Don't forget to reset y!!
 # You'll need to manually stop the code
-
-
+'''
+x = 10
+y = 0
+c = -1
+while x > y:
+    print(y)
+    y += c
+'''
 # comment this out after you run it.
 
 # So while loops are simple tools with some pitfalls.
