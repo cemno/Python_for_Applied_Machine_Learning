@@ -240,21 +240,30 @@ def properties_circle(self):
 '''
 
 class circle:
-    '''
+    """
     numpy needed
-    '''
+    """
     def __init__(self, radius):
         self.radius = radius
-        self.area = radius * (numpy.pi ** 2)
-        self.circumference = 2 * numpy.pi * radius
-        self.diameter = 2 * radius
+    def area(self):
+        area = self.radius * (numpy.pi ** 2)
+        return area
+    def circumference(self):
+        circumference = 2 * numpy.pi * self.radius
+        return circumference
+    def diameter(self):
+        diameter = 2 * self.radius
+        return diameter
     def print_circle(self):
         print("My circle: ")
-        print("area: " + repr(self.area) + "\ncircumference: " + repr(self.circumference) + "\ndiameter: " + repr(self.diameter))
+        print("area: " + repr(circle.area(self)))
+        print("circumference: " + repr(circle.circumference(self)))
+        print("diameter: " + repr(circle.diameter(self)))
 
 my_circle = circle(5.5)
 my_circle.print_circle()
-
+my_circle.radius = 5
+my_circle.print_circle()
 # or alternatively we can use the inbuilt pi from the numpy library.
 # Do you remember how to import numpy, try it now
 # the internal numpy pi can be called simply as np.pi
@@ -289,9 +298,26 @@ my_circle.print_circle()
 # = circle_properties(
 # now let's output this data
 # return
-'''
-I don't understand what i am supposed to do.
-'''
+def circle_properties(radius, pi):
+    print(radius)
+    area = radius * (pi ** 2)
+    circumference = 2 * pi * radius
+    diameter = 2 * radius
+    return area, circumference, diameter
+
+def circle_properties_multiple(*args, pi = numpy.pi):
+    diameter = numpy.zeros((len(args), 1))
+    circumference = numpy.zeros((len(args), 1))
+    area = numpy.zeros((len(args), 1))
+    print(args[0])
+    for j in range(len(args)):
+        diameter[j], circumference[j], area[j] = circle_properties(args[j], pi)
+    return diameter, area, circumference
+
+circle_properties_multiple(3,4,5)
+print(circle_properties_multiple(3,4,5))
+
+
 
 # display the results.
 
@@ -423,8 +449,8 @@ with open("file.txt", 'wb') as file:
 # id here. Remember we need the binary flag as well. Try to load and print the information.
 
 with open("file.txt", 'rb') as file:
-    list1 = pickle.load(file)
-    dict1 = pickle.load(file)
+    data = pickle.load(file)
+    list1, dict1 = data[0], data[1]
 print(list1)
 print(dict1)
 
