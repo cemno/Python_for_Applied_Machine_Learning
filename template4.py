@@ -120,7 +120,7 @@ if runvisual: #UNCOMMENT THIS LINE!!!
   # So what we need is data on an x axis and data on a y axis: x and f(x).
   # In this case x will be an equally spaced vector (numpy). We will use the np.linspace( start, finsish, number of steps )
   # function to do this. Let's try and create data starting at 0, ending at 6 pi's, with 100 steps.
-    x = numpy.linspace(0, 6*numpy.pi, 100)
+    x = numpy.linspace(0, 6*numpy.pi, 6) #change step size
   # great, now what about f(x). Well numpy also has functions like sin and cos, let's do np.sin( x ) for our f(x)
     def f(x):
         return numpy.sin(x)
@@ -130,26 +130,39 @@ if runvisual: #UNCOMMENT THIS LINE!!!
     plt.figure()
     plt.xlabel("x axis")
     plt.ylabel("y axis")
-    plt.plot(x, f(x))
-    plt.show()
-
+    plt.subplot(211)
   # finally let's plot the data with the basic plt.plot() function... Can you work it out?
-
-
+    plt.plot(x, f(x), 'r--')
   # and then we need to show it
-
-
+  #  plt.show()
   # What about if we want to plot multiple things on the same plot?
   # Can you work it out? Try it in your own time.
   # We already have x and fx which we will now change to sinx
-
-
-
+    plt.subplot(212)
+    plt.plot(x, numpy.sin(x))
+    plt.show()
+    plt.close()
   # Now let's create a plot using subplots. So let's say 4 plots in a 2*2 matrix.
   # We will again use the linspace for x that we created earlier.
   # create sin(x) cos(x) sin(x**2) sin(x)/4
+    fig = plt.figure()
+    plt.subplot(221)
+    plt.plot(x, numpy.sin(x), 'r')
+    plt.title("f(x) = sin(x)")
+    plt.subplot(222)
+    plt.plot(x, numpy.cos(x), 'b')
+    plt.title("f(x) = cos(x)")
+    plt.subplot(223)
+    plt.plot(x, numpy.sin(x**2), 'r:')
+    plt.title("f(x) = sin(x**2)")
+    plt.subplot(224)
+    plt.plot(x, numpy.sin(x)/4, 'r--')
+    plt.title("f(x) = sin(x)/4")
+    plt.subplots_adjust(top=0.90, bottom=0.10, left=0.10, right=0.95, hspace=0.5,
+                        wspace=0.30)
+    fig.suptitle("functions")
 
-
+    plt.show()
   # Now we will use the plt.subplots( rows, cols ) where we have a matrix of plots.
   # but in this case we return a fig and an axis from plt.subplots(). We have 4 plots so we'll do it as a 2*2 matrix.
 
@@ -176,7 +189,9 @@ if runvisual: #UNCOMMENT THIS LINE!!!
 
 
   # now let's run the script again but increase the number of steps in linspace. Say 2000, and what do you see?
-
+'''
+The step size is important for the "accuracy" of the plots, especially fpr the sin function with the power.
+'''
   # Now we are going to do some scatter plotting, another very handy plotting tool for data visualisation.
   # But first we need to create some data, and in this case we will create normally distributed data along the x and y axis.
   # to do this we need a mean location as a numpy array: np.array( (mu_x, mu_y) )
