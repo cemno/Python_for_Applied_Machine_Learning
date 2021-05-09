@@ -203,49 +203,50 @@ if runvisual:  # UNCOMMENT THIS LINE!!!
 '''
 The step size is important for the "accuracy" of the plots, especially fpr the sin function with the power.
 '''
-# Now we are going to do some scatter plotting, another very handy plotting tool for data visualisation.
-# But first we need to create some data, and in this case we will create normally distributed data along the x and y axis.
-# to do this we need a mean location as a numpy array: np.array( (mu_x, mu_y) )
-# and a sigma (covariance): np.array( [[x0, x1][y0, y1]] ). For more information on mean and covariance for the normal distribution
-# please see: https://en.wikipedia.org/wiki/Multivariate_normal_distribution
-# let's create the numpy arrays for the mean and covariances, dist0 = mu[3,2] cov[[1, 0.5][0.5,1]]
-#                                                             dist1 = mu[-1,1] cov[[2,0][0,2]]
-mu_x = 100
-mu_y = 50
-mu = numpy.array((mu_x, mu_y))
+if runvisual:
+    # Now we are going to do some scatter plotting, another very handy plotting tool for data visualisation.
+    # But first we need to create some data, and in this case we will create normally distributed data along the x and y axis.
+    # to do this we need a mean location as a numpy array: np.array( (mu_x, mu_y) )
+    # and a sigma (covariance): np.array( [[x0, x1][y0, y1]] ). For more information on mean and covariance for the normal distribution
+    # please see: https://en.wikipedia.org/wiki/Multivariate_normal_distribution
+    # let's create the numpy arrays for the mean and covariances, dist0 = mu[3,2] cov[[1, 0.5][0.5,1]]
+    #                                                             dist1 = mu[-1,1] cov[[2,0][0,2]]
+    mu_x = 100
+    mu_y = 50
+    mu = numpy.array((mu_x, mu_y))
 
-# Okay now to create some normally randomly distributed points.
-# For this we need np.random.multivariate_normal( mean, cov, number of points )
-# Try to do that now based on what we just created, remember we need two distributions. And we'll create 100 points.
-
-
-# okay now we have two distributions, now we just need to plot them.
-# let's look at the data itself using the .shape function, plot the shape of both distributions.
+    # Okay now to create some normally randomly distributed points.
+    # For this we need np.random.multivariate_normal( mean, cov, number of points )
+    # Try to do that now based on what we just created, remember we need two distributions. And we'll create 100 points.
 
 
-# In this case we manually create a figure, plt.figure()
+    # okay now we have two distributions, now we just need to plot them.
+    # let's look at the data itself using the .shape function, plot the shape of both distributions.
 
 
-# Then we need to do a scatter plot in the same way we did plot in the first example.
-# Where scatter( <x data of distribution N>. <y data of the distribution N>, c=<colour string like 'red'>, label=<legend name> )
+    # In this case we manually create a figure, plt.figure()
 
 
-# now label the axis and give it a title plt.xlabel, ylabel, title
+    # Then we need to do a scatter plot in the same way we did plot in the first example.
+    # Where scatter( <x data of distribution N>. <y data of the distribution N>, c=<colour string like 'red'>, label=<legend name> )
 
 
-# now show the figure
+    # now label the axis and give it a title plt.xlabel, ylabel, title
 
 
-# but this time we will also use plt.savefig( <savename.pdf> ) to save a version of the figure.
+    # now show the figure
 
 
-# view the image, it should be in your working directory.
+    # but this time we will also use plt.savefig( <savename.pdf> ) to save a version of the figure.
 
 
-# Finally in your own time try to plot a histogram...
-# plotting a histogram and the distributions
-# this is just a 1d plot so only 1 mean and deviation (sigma) are required
-# In the previous example we did multivariate, now it's single...
+    # view the image, it should be in your working directory.
+
+
+    # Finally in your own time try to plot a histogram...
+    # plotting a histogram and the distributions
+    # this is just a 1d plot so only 1 mean and deviation (sigma) are required
+    # In the previous example we did multivariate, now it's single...
 
 
 """
