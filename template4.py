@@ -4,13 +4,14 @@
   2. data visualisation
   3. image manipulation
 """
+import matplotlib.pyplot as plt
 
 """
   ####### Import area
 """
-import numpy as np # we always seem to use this so I will import it for you.
-
-
+import numpy # we always seem to use this so I will import it for you.
+import matplotlib
+import skimage
 """
   ####### Preamble
 """
@@ -19,21 +20,21 @@ import numpy as np # we always seem to use this so I will import it for you.
 # benefit us in reading the outputs. Previously we have had all the exercises
 # printed to screen. Now we can choose which ones we print.
 runclass = False
-runvisual = False
+runvisual = True
 runimage = False
 
 """
   ####### 1. Classes
 """
-# arew we running the class information?
+# are we running the class information?
 if runclass:
   # Classes are a great way to group common methods (functions) and members (variables) together in one space.
   # In last weeks practical we created a function that calculated the diameter, circumference,
   # and the area. Now we will do exactly the same thing in a class.
-  # The inbuilt function __init__ is something that we will use througout our classes.
+  # The inbuilt function __init__ is something that we will use throughout our classes.
   # When you initialise the class you can insert information that get stored.
   # First let's create the class called circle_props
-
+    class circle_props:
 
     # The next step is to assign any shared variables.
     # These are static variables that are assigned to all circle_props classes
@@ -45,33 +46,49 @@ if runclass:
     # NOTE: For all methods of a class the first variable needs to be self, this ensures
     # the "function" is assigned to the class, giving it access to all class members and methods.
     # Let's create the __init__ method with a radius and pi input.
-
-
+        def __init__(self, radius, pi_input=numpy.pi):
+          self.pi = pi_input
+          self.radius = radius
       # to assign an input variable to the class we need to use self.<variable name> = inputn
       # try to assign radius to self.r and pi to self.pi
 
 
     # so now self.r and self.pi are members in the class that we can use in any of our functions.
     # Okay, so let's try it. Create a method that calculates the diameter based on self.r
-    # Don't forget self as the first varaible
-
-
+    # Don't forget self as the first variable
+        def area(self):
+            area = self.pi * (self.radius ** 2)
+            return area
+        def circumference(self):
+            circumference = 2 * self.pi * self.radius
+            return circumference
+        def diameter(self):
+            diameter = 2 * self.radius
+            return diameter
     # Now create a method for the other two, you'll need self.pi
-
-
     # aggregation method
-
+        # ?
 
     # the update method
-
-
+        def update(self, radius = None, pi_input = None):
+            if radius:
+                self.radius = radius
+            if pi_input:
+                self.pi = pi_input
+        def print_circle(self):
+            print("My circle: ")
+            print("radius: " + repr(self.radius))
+            print("area: " + repr(self.area()))
+            print("circumference: " + repr(self.circumference()))
+            print("diameter: " + repr(self.diameter()))
   # okay let's calculate these statistics?
   # first we create the class, remember the parameters that were in __init__.
-
+    circle1 = circle_props(5)
+    circle1.print_circle()
+    circle1.update(10)
+    circle1.print_circle()
 
   # output the statistics individually
-
-
   # okay so we can now output the statistics individually, what about if we want to do it
   # all in one go.
   # Go back to your class and insert a method calc_all( self, ) that uses the other three
@@ -97,19 +114,24 @@ if runclass:
 # own. The solutions will be provided for you.
 # The first thing you need to do is add import matplotlib.pyplot as plt in your import area.
 # Are we running the visual? Do you need to change the flags?
-#if runvisual: #UNCOMMENT THIS LINE!!!
+if runvisual: #UNCOMMENT THIS LINE!!!
+    pass
   # Okay so let's do some basic plots
   # So what we need is data on an x axis and data on a y axis: x and f(x).
   # In this case x will be an equally spaced vector (numpy). We will use the np.linspace( start, finsish, number of steps )
   # function to do this. Let's try and create data starting at 0, ending at 6 pi's, with 100 steps.
-
-
+    x = numpy.linspace(0, 6*numpy.pi, 100)
   # great, now what about f(x). Well numpy also has functions like sin and cos, let's do np.sin( x ) for our f(x)
-
+    def f(x):
+        return numpy.sin(x)
 
   # now the interesting stuff. Let's create a figure using plt.figure()
   # input the x label using plt.xlabel( <insert name> ) and f(x) label with plt.ylabel( <insert name> )
-
+    plt.figure()
+    plt.xlabel("x axis")
+    plt.ylabel("y axis")
+    plt.plot(x, f(x))
+    plt.show()
 
   # finally let's plot the data with the basic plt.plot() function... Can you work it out?
 
@@ -202,6 +224,7 @@ if runclass:
   ####### 3. image manipulation
 """
 if runimage:
+  pass
   # Now we will play with some images. As part of this weeks data you should have also downloaded two images.
   # one of these images is an RGB image, the other is a black and white image.
   # In this case we call the RGB image the input and the other a mask or label image.
