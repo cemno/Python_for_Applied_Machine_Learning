@@ -4,7 +4,7 @@
   2. data visualisation
   3. image manipulation
 """
-import matplotlib.pyplot as plt
+
 
 """
   ####### Import area
