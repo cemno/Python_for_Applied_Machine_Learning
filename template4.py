@@ -10,8 +10,9 @@ import matplotlib.pyplot as plt
   ####### Import area
 """
 import numpy  # we always seem to use this so I will import it for you.
-import matplotlib
-import skimage
+import matplotlib.pyplot as plt
+from skimage.io import imread, imsave
+import skimage.color as skcol
 
 """
   ####### Preamble
@@ -21,8 +22,9 @@ import skimage
 # benefit us in reading the outputs. Previously we have had all the exercises
 # printed to screen. Now we can choose which ones we print.
 runclass = False
-runvisual = True
-runimage = False
+runvisual1 = False
+runvisual2 = False
+runimage = True
 
 """
   ####### 1. Classes
@@ -121,35 +123,39 @@ if runclass:
 # own. The solutions will be provided for you.
 # The first thing you need to do is add import matplotlib.pyplot as plt in your import area.
 # Are we running the visual? Do you need to change the flags?
-if runvisual:  # UNCOMMENT THIS LINE!!!
+if runvisual1:  # UNCOMMENT THIS LINE!!!
     pass
     # Okay so let's do some basic plots
     # So what we need is data on an x axis and data on a y axis: x and f(x).
     # In this case x will be an equally spaced vector (numpy). We will use the np.linspace( start, finsish, number of steps )
     # function to do this. Let's try and create data starting at 0, ending at 6 pi's, with 100 steps.
-    x = numpy.linspace(0, 6 * numpy.pi, 6)  # change step size
+    steps = 6
+    x = numpy.linspace(0, 6 * numpy.pi, steps)  # change step size
 
 
     # great, now what about f(x). Well numpy also has functions like sin and cos, let's do np.sin( x ) for our f(x)
-    def f(x):
+    def f_sin(x):
         return numpy.sin(x)
-
+    fx = numpy.sin(x)
 
     # now the interesting stuff. Let's create a figure using plt.figure()
     # input the x label using plt.xlabel( <insert name> ) and f(x) label with plt.ylabel( <insert name> )
     plt.figure()
     plt.xlabel("x axis")
     plt.ylabel("y axis")
-    plt.subplot(211)
+    #plt.subplot(211)
     # finally let's plot the data with the basic plt.plot() function... Can you work it out?
-    plt.plot(x, f(x), 'r--')
+    plt.plot(x, f_sin(x), 'r--', label = "sin(x)") # or plt.plot(x, fx, 'r--')
     # and then we need to show it
     #  plt.show()
     # What about if we want to plot multiple things on the same plot?
     # Can you work it out? Try it in your own time.
-    # We already have x and fx which we will now change to sinx
-    plt.subplot(212)
-    plt.plot(x, numpy.sin(x))
+    # We already have x and fx which we will now change to sinx cosx
+    #plt.subplot(212)
+    #plt.plot(x, numpy.sin(x))
+    plt.plot(x, numpy.cos(x),  'g:', label = "cos(x)")
+    plt.legend(loc = 0) #0 equals automatically best position
+    plt.title("Sin(x) and Cos(x) at a step size of " + repr(steps))
     plt.show()
     plt.close()
     # Now let's create a plot using subplots. So let's say 4 plots in a 2*2 matrix.
@@ -203,7 +209,7 @@ if runvisual:  # UNCOMMENT THIS LINE!!!
 '''
 The step size is important for the "accuracy" of the plots, especially fpr the sin function with the power.
 '''
-if runvisual:
+if runvisual2:
     # Now we are going to do some scatter plotting, another very handy plotting tool for data visualisation.
     # But first we need to create some data, and in this case we will create normally distributed data along the x and y axis.
     # to do this we need a mean location as a numpy array: np.array( (mu_x, mu_y) )
@@ -211,34 +217,40 @@ if runvisual:
     # please see: https://en.wikipedia.org/wiki/Multivariate_normal_distribution
     # let's create the numpy arrays for the mean and covariances, dist0 = mu[3,2] cov[[1, 0.5][0.5,1]]
     #                                                             dist1 = mu[-1,1] cov[[2,0][0,2]]
-    mu_x = 100
-    mu_y = 50
-    mu = numpy.array((mu_x, mu_y))
+    # mu_x = 100
+    # mu_y = 50
+    # mu = numpy.array((mu_x, mu_y))
+    # sigma = numpy.array([[x0, x1][y0,y1]])
 
     # Okay now to create some normally randomly distributed points.
     # For this we need np.random.multivariate_normal( mean, cov, number of points )
     # Try to do that now based on what we just created, remember we need two distributions. And we'll create 100 points.
-
-
+    X0 = numpy.random.multivariate_normal([3,2], [[1,0.5], [0.5,1]], 100)
+    X1 = numpy.random.multivariate_normal([-1,1], [[2,0], [0,2]], 100)
     # okay now we have two distributions, now we just need to plot them.
     # let's look at the data itself using the .shape function, plot the shape of both distributions.
-
+    print(X0.shape); print(numpy.shape(X0))
+    print(X1.shape); print(numpy.shape(X1))
 
     # In this case we manually create a figure, plt.figure()
-
+    plt.figure()
 
     # Then we need to do a scatter plot in the same way we did plot in the first example.
     # Where scatter( <x data of distribution N>. <y data of the distribution N>, c=<colour string like 'red'>, label=<legend name> )
+    plt.scatter(X0[:, 0], X0[:, 1], c='red', label='D0')
+    plt.scatter(X1[:, 0], X1[:, 1], c='blue', label='D1')
 
 
     # now label the axis and give it a title plt.xlabel, ylabel, title
-
+    plt.xlabel('X')
+    plt.xlabel('Y')
+    plt.title('Two multivariate distributions')
 
     # now show the figure
-
+    # plt.show()
 
     # but this time we will also use plt.savefig( <savename.pdf> ) to save a version of the figure.
-
+    plt.savefig("data/week04/fig_multivariate_dist.png")
 
     # view the image, it should be in your working directory.
 
@@ -264,16 +276,18 @@ if runimage:
     # This does exactly what is said in the line, now we can use imsave or imread with out needing to preface it with
     # skimage.io like we do with np.array( [] )...
     # So let's use imread to read in week03_rgb.png and week03_msk.png: imread( <string of file.png> )
-
+    rgb = imread("data/week04/week03_rgb.png")
+    msk = imread("data/week04/week03_msk.png")
+    print("rgb ", rgb.shape)
+    print("msk ", msk.shape)
     # okay so let's look at the image shapes, this gets loaded in as a numpy array.
-
     # now let's look at the statistics of the RGB image.
     # We will use min() max() mean() and std()
-
+    print(rgb.min(), rgb.max(), rgb.mean(), rgb.std())
     # let's discuss these values in the class.
     # what about if we define an axis to calculate the mean? So we had 1280*720*3, h*w*c
     # what do you think will happen if we calculate the min( axis=2 )? What is the second axis here?
-
+    print(rgb.min(axis = 2).shape)
     # now we will use two colour space conversion. rgb to grey scale and rgb 2 Lab.
     # Does anyone know the problem with the RGB colour space?
     # colour spaces: https://scikit-image.org/docs/dev/api/skimage.color.html
@@ -282,16 +296,19 @@ if runimage:
     # This can become cumbersome, let's do something different to simplify it:
     # import skimage.color as skcol
     # So now we can do skcol.rgb2gray( rgb image )
-
+    gry = skcol.rgb2gray(rgb)
     # and now save it using imsave( <savename.png>, image )
-
+    imsave("data/week04/week03_rgb_to_gray.png", gry)
     # now let's do it with a slightly more interesting colour space.
-
+    lab = skcol.rgb2lab(rgb)
     # The cool thing about the lab space is that it isn't additive! It uses the channels in a different way to RGB.
     # Channel 0 is the luminance, and 1,2 are the colours (chromanance).
     # So we can illuminate the image using channel 0 by adding or subtracting values then converting them back to
     # RGB. This is significantly more difficult in the RGB space.
     # Let's add 20 to the 0'th channel of the lab image then convert it back to RGB and save it.
-
+    print(lab.shape)
+    lab[:,:,0] += 20
+    rgb0 = skcol.lab2rgb(lab)
+    imsave("data/week04/rgb_luminance_20.png", rgb0)
     # now visually compare the two images.
     # This is the end of this weeks practical.
