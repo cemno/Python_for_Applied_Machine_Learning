@@ -91,7 +91,7 @@ if runex1:
             raise Exception("Input for rms() has not the same length.")
 
 
-    print("MSE: " + repr(mse(g, p)) + "\nMAE: " + repr(mae(g, p)) + "\nRMS: " + repr(round(rms(g, p), 2)))
+    # print("MSE: " + repr(mse(g, p)) + "\nMAE: " + repr(mae(g, p)) + "\nRMS: " + repr(round(rms(g, p), 2)))
 
     # now let's use them all.
     # first let's load the pickle week04_gp.pkl
@@ -109,39 +109,37 @@ if runex1:
 
     # Now that we know the keys let's use the three functions we created...
     print("MSE: " + repr(round(mse(gt, pred), 2)) + "\nMAE: " + repr(round(mae(gt, pred), 2)) + "\nRMS: " + repr(
-      round(rms(gt, pred), 2)))
+        round(rms(gt, pred), 2)))
 """
   ##### 2. Feature selection
 """
-# if runex2:
-# Please refer to the pdf for how to install pandas in our environment.
-# Once you have installed it make sure you add it to the import area "import pandas as pd".
-# For this exercise we will try and see if we can select a feature for training a linear regression model.
-# It is important to have your goal fixed in your mind, so in this case we want
-# our independent variables to have some form of linear relationship with our dependent
-# variable.
-# First let's use extract_data to extract the information from the csv file "week04_housing.csv"
-# and investigate the returning dictionary.
+if runex2:
+    # Please refer to the pdf for how to install pandas in our environment.
+    # Once you have installed it make sure you add it to the import area "import pandas as pd".
+    # For this exercise we will try and see if we can select a feature for training a linear regression model.
+    # It is important to have your goal fixed in your mind, so in this case we want
+    # our independent variables to have some form of linear relationship with our dependent
+    # variable.
+    # First let's use extract_data to extract the information from the csv file "week04_housing.csv"
+    # and investigate the returning dictionary.
+    housing = extract_data("data/week05/Practical5/week04_housing.csv")
+    print(housing)
 
+    # What do you think the depenedent value is here?
 
-# What do you think the depenedent value is here?
+    # now let's plot the depenedent versus the others to see if we can spot a good
+    # independent value HINT use the scatter plot function, don't forget to import.
 
+    # so from that visual inspection, keeping in mind we want a linear relationship,
+    # which would you select?
+    # Run it again if you need to. Once you have selected one, comment that for loop out.
+    # Now save this variable versus the depenedent variable using savefig...
 
-# now let's plot the depenedent versus the others to see if we can spot a good
-# independent value HINT use the scatter plot function, don't forget to import.
-
-
-# so from that visual inspection, keeping in mind we want a linear relationship,
-# which would you select?
-# Run it again if you need to. Once you have selected one, comment that for loop out.
-# Now save this variable versus the depenedent variable using savefig...
-
-
-# So that's how we might go about selecting variables using a visual inspection.
-# This isn't always possible especially when you consider quadratic relationships or even noisey data.
-# But it's ALWAYS a good place to start, having a look at your data. If you don't know
-# the properties of your data it's much more difficult to build a good model.
-
+    # So that's how we might go about selecting variables using a visual inspection.
+    # This isn't always possible especially when you consider quadratic relationships or even noisey data.
+    # But it's ALWAYS a good place to start, having a look at your data. If you don't know
+    # the properties of your data it's much more difficult to build a good model.
+    pass
 """
   ###### 3. Linear regression
 """
