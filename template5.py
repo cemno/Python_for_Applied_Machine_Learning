@@ -8,13 +8,15 @@
 """
   ####### Import area
 """
+import pickle
 import numpy as np
 import pandas as pd
 from matplotlib import pyplot as plt
+from sklearn.linear_model import LinearRegression
 """
   ####### Preamble
 """
-runex1 = False
+runex1 = True
 runex2 = False
 runex3 = False
 
@@ -40,30 +42,61 @@ if runex1:
   # p in this case is the predictions of our models.
   # both of these need to be exactly the same dimensions. Let's assume that they are
   # always of shape (1,N)
-  # Create a function for the following three expressisons, you can find the functions
+  # Create a function for the following three expressions, you can find the functions
   # in the PDF.
   # Mean squared error or L2-Distance
   #       mse = \frac{1}{N}\sum_{i=0}^{N-1}(g - p)^2
+  g = [1,2,5,4,5]
+  p = [5,5,3,4,5]
   def mse( g, p ):
+    if len(g)==len(p):
+      sum = float()
+      for i in range(len(g)-1):
+        sum += (g[i]-p[i])**2
+      mse = sum / len(g)
+      return mse
+    else:
+      raise Exception("Input for mse() has not the same length.")
 
-
-  # Mean absolute error or L1-Distance (|x| indicates the absolute value of x)
+    # Mean absolute error or L1-Distance (|x| indicates the absolute value of x)
   #       mae = \frac{1}{N}\sum_{i=0}^{N-1}|g - p|
   def mae( g, p ):
-
+    if len(g)==len(p):
+      sum = float()
+      for i in range(len(g)-1):
+        sum += np.abs(g[i]-p[i])
+      mse = sum / len(g)
+      return mse
+    else:
+      raise Exception("Input for mse() has not the same length.")
 
   # Root mean squared
   #       rms = \sqrt{\frac{1}{N}\sum_{i=0}^{N-1}(g - p)^2}
   def rms( g, p ):
+    if len(g)==len(p):
+      sum = float()
+      for i in range(len(g)-1):
+        sum += (g[i]-p[i])**2
+      rms = np.sqrt(sum / len(g))
+      return rms
+    else:
+      raise Exception("Input for rms() has not the same length.")
 
+
+  print("MSE: " + repr(mse(g, p)) + "\nMAE: " + repr(mae(g,p)) + "\nRMS: " + repr(round(rms(g,p),2)))
 
   # now let's use them all.
   # first let's load the pickle week04_gp.pkl
   # This file is a dictionary with the prediction and ground truth in there.
   # Do you remember how to check what keys are in the pickle?
   # If we are going to use pickle what do we need to do in the import area?
+  with open("data/week05/Practical5/week04_gp.pkl", 'rb') as file:
+    dump = pickle.load(file)
+    print(dump.keys())
+    gt = dump["gt"]
+    pred = dump["pred"]
 
-
+  print("MSE: " + repr(mse(gt, pred)) + "\nMAE: " + repr(mae(gt, pred)) + "\nRMS: " + repr(round(rms(gt, pred), 2)))
   # Now that we know the keys let's use the three functions we created...
 
 
