@@ -14,7 +14,7 @@ import pandas as pd
 import random
 from matplotlib import pyplot as plt
 from sklearn.linear_model import LinearRegression
-
+random.seed(1212)
 """
   ####### Preamble
 """
@@ -38,22 +38,7 @@ def extract_data(location):
     return out, data.shape[0]
 
 
-"""
-  ####### 1. Create metrics as functions where the inputs are 2D vectors.
-"""
-if runex1:
-    # g in this case is the labels, or expected values.
-    # p in this case is the predictions of our models.
-    # both of these need to be exactly the same dimensions. Let's assume that they are
-    # always of shape (1,N)
-    # Create a function for the following three expressions, you can find the functions
-    # in the PDF.
-    # Mean squared error or L2-Distance
-    #       mse = \frac{1}{N}\sum_{i=0}^{N-1}(g - p)^2
-    g = [1, 2, 5, 4, 5]
-    p = [5, 5, 3, 4, 5]
-
-
+'''
     def mse(g, p):
         if len(g) == len(p):
             sum = float()
@@ -90,7 +75,39 @@ if runex1:
             return rms
         else:
             raise Exception("Input for rms() has not the same length.")
+    '''
 
+
+def mse(g, p):
+    diff = g - p
+    sqrt = diff ** 2
+    return np.mean(sqrt)
+
+
+def mae(g, p):
+    diff = g - p
+    abs = np.abs(diff)
+    return np.mean(abs)
+
+
+def rms(g, p):
+    return np.sqrt(mse(g, p))
+
+
+"""
+  ####### 1. Create metrics as functions where the inputs are 2D vectors.
+"""
+if runex1:
+    # g in this case is the labels, or expected values.
+    # p in this case is the predictions of our models.
+    # both of these need to be exactly the same dimensions. Let's assume that they are
+    # always of shape (1,N)
+    # Create a function for the following three expressions, you can find the functions
+    # in the PDF.
+    # Mean squared error or L2-Distance
+    #       mse = \frac{1}{N}\sum_{i=0}^{N-1}(g - p)^2
+    g = [1, 2, 5, 4, 5]
+    p = [5, 5, 3, 4, 5]
 
     # print("MSE: " + repr(mse(g, p)) + "\nMAE: " + repr(mae(g, p)) + "\nRMS: " + repr(round(rms(g, p), 2)))
 
@@ -127,9 +144,21 @@ if runex2:
     print(housing)
     print(housing[0]["latitude"])
     # What do you think the dependent value is here?
-
+    # median_house_value
     # i would guess the median_house_value is dependent on the median_income of an individual.
-
+    '''
+    Y = housing[0]["median_house_value"]
+    for k, x in housing[0].items():
+        if k == 'median_house_value':
+            continue
+        #
+        plt.figure()
+        plt.scatter(x, Y, alpha=0.2)
+        plt.xlabel(k)
+        plt.ylabel( 'median_house_value')
+        plt.tight_layout()
+        plt.show()
+    '''
     # now let's plot the dependent versus the others to see if we can spot a good
     plt.figure()
     plt.xlabel("Median house value")
@@ -181,14 +210,16 @@ if runex3:
     for i in range(data_length):
         if i not in trainList:
             evalList.append(i)
+    # alternative (more pythonic)
+    evalList = [i for i in range(data_length) if i not in trainList]
 
-    #
     # print(len(evalList))
 
     # So now we have a list of index's that correspond to the training and evaluation
     # samples. Let's use these indexes on x and y to create the subsets.
 
     x_train = [housing[0]["median_income"][i] for i in trainList]
+    # or (because its a vector) we can do: x_train = housing[0]["median_income"][trainList]
     x_eval = [housing[0]["median_income"][i] for i in evalList]
 
     y_train = [housing[0]["median_house_value"][i] for i in trainList]
@@ -209,7 +240,7 @@ if runex3:
     # First instantiate the class (there are some hints in the pdf).
     linreg = LinearRegression()
     # Try and fit using your current data. What error comes up?
-#    linreg.fit(x_train, y_train)
+    #    linreg.fit(x_train, y_train)
     # So we have to fix the data so that it's the correct shape. The notification actually
     # tells you how to go about this. There are a number of ways to go about this, but try
     # the recommended version, however make the size (-1, 1) not (1, -1) like suggested.
@@ -225,16 +256,18 @@ if runex3:
 
     # now let's fit the model with the appropriately shaped data.
     linreg.fit(x_train, y_train)
-    print("R²: " + repr(round(linreg.score(x_train, y_train),2)))
+    print("R²: " + repr(round(linreg.score(x_train, y_train), 2)))
     # So inside the class we now have a trained model. Let's predict the test set based on
     # this model!
     y_pred = linreg.predict(x_eval)
     # now let's plot ypred as a line and y_test as a scatter versus x_test
     plt.figure()
-    plt.scatter(x_eval, y_eval, c = "red", alpha = 0.2)
-    plt.plot(x_eval, y_pred, c = "black")
+    plt.scatter(x_eval, y_eval, c="red", alpha=0.1)
+    plt.plot(x_eval, y_pred, c="black")
     plt.show()
     # now let's use our metrics to see how accurately we were able to predict things?
     # Remember we had these set up as (1,N) matrix...
-    pass
+    print("mse {}".format(mse(y_train, y_pred)))
+    print("mae {}".format(mae(y_train, y_pred)))
+    print("rms {}".format(rms(y_train, y_pred)))
     pass
