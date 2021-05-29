@@ -12,16 +12,19 @@ import matplotlib.pyplot as plt
 """
 
 import numpy as np
-from skimage.io import imread, imsave, imshow
+from skimage.io import imread, imsave, imshow, show
 import skimage.color as skcol
 from skimage.feature import hog
 import matplotlib.pyplot as plt
+import os
+import regex as re
+
 """
   ####### Preamble
 """
 ex01 = False
-ex02 = True
-ex03 = False
+ex02 = False
+ex03 = True
 ex04 = True
 
 """
@@ -46,9 +49,9 @@ if ex01:
     # another (remember you only want the luminance channel). You will need to copy the lab
     # image (lab.copy()) into two new images. This is due to the mutable properties of numpy arrays...
     sp_00_lab_plus = sp_00_lab.copy()
-    sp_00_lab_plus[:,:,0] += 20
+    sp_00_lab_plus[:, :, 0] += 20
     sp_00_lab_minus = sp_00_lab.copy()
-    sp_00_lab_minus[:,:,0] -= 20
+    sp_00_lab_minus[:, :, 0] -= 20
 
     # Now let's convert the greyscale image and the two lab images to rgb and save them.
     # You'll need to add something to your import section if you didn't do it earlier.
@@ -91,20 +94,19 @@ if ex02:
     #       visualize = True
     # Create variables with these parameters
     orientations = 4
-    pixels_per_cell=(8,8)
-    cells_per_block=(1,1)
+    pixels_per_cell = (8, 8)
+    cells_per_block = (1, 1)
     visualize = True
-    # The total call would be:
-    #   features, map = hog( gry, orientations=, pixels_per_cell=, cells_per_block=, visualize=True, feature_vector=False )
-    # Now using the above rgb image, the variables you created, and the call I set create
-    # a hog representation of the image.
+    # The total call would be: features, map = hog( gry, orientations=, pixels_per_cell=, cells_per_block=,
+    # visualize=True, feature_vector=False ) Now using the above rgb image, the variables you created, and the call I
+    # set create a hog representation of the image.
     features, map = hog(hor_stripe_gray, orientations=orientations, pixels_per_cell=pixels_per_cell,
                         cells_per_block=cells_per_block, visualize=True, feature_vector=False)
     # Now we will visualise both the image and the hog map.
     # We will use the subplots function we used in the visualisation practical.
     # What do you need to import?
     # Let's create a subplot with (1,2) windows (rgb, map)
-    figure, (axis1, axis2) = plt.subplots(1,2, figsize=(8,4), sharex=True, sharey=True)
+    figure, (axis1, axis2) = plt.subplots(1, 2, figsize=(8, 4), sharex=True, sharey=True)
     # let's plot the image on ax[0] using imshow( rgb )
     axis1.axis('off')
     axis1.imshow(hor_stripe_gray)
@@ -113,18 +115,37 @@ if ex02:
     axis2.imshow(map)
     plt.show()
     # Go back and play with the parameters.
+    test = imread("data/week06/texture/irregular.jpg")  # Alternatives: plaid, spots, patternless
+    test_gray = skcol.rgb2gray(test.copy())
+    orientations = 8
+    pixels_per_cell = (2, 2)
+    cells_per_block = (2, 2)
+    features, hog_normal = hog(test, orientations=orientations, pixels_per_cell=pixels_per_cell,
+                               cells_per_block=cells_per_block, visualize=True, feature_vector=False)
+    features, hog_gray = hog(test_gray, orientations=orientations, pixels_per_cell=pixels_per_cell,
+                             cells_per_block=cells_per_block, visualize=True, feature_vector=True)
+    figure, ((img1, img2), (img3, img4)) = plt.subplots(2, 2, figsize=(8, 8), sharex=True, sharey=True)
+    img1.axis('off')
+    img1.imshow(test)
+    img2.axis('off')
+    img2.imshow(hog_normal)
+    img3.axis('off')
+    img3.imshow(test_gray)
+    img4.axis('off')
+    img4.imshow(hog_gray)
+    plt.show()
     # Read in some of the other texture snippets and see what it looks like.
     # Depending on the parameters you can get a perfect representation of the input
     # image, can anyone say what the problem with this is?
     # Now how do we use the feature vector output by the function.
     # We currently have feature_vector set to False, what shape does that give us?
-
+    print(test_gray.shape)
     # So if we wanted a single feature vector for the whole image, i.e. a representation
     # of the entire image in blocks we can set the feature_vector to True. Try this.
-    # What do you think a pitfall of this is? Can you come up witha better representation?
-
+    # What do you think a pitfall of this is? Can you come up with better representation?
+    print(hog_gray.shape)
     # first let's reset the parameters to the default values but keep feature vector as True.
-    # Essetially we have rgb.shape[0]//ppc[0] boxes on the row axis.
+    # Essentially we have rgb.shape[0]//ppc[0] boxes on the row axis.
     # Then we boxes[rows]*boxes[cols]*orientations (we are negating the cells per block but you
     # can see how they are represented with feature_vector set to False)
     # So our feature shape should be:
@@ -192,11 +213,13 @@ if ex03:
     # file systems. There are some great tools in this library like path creations, making directories
     # reading directory files and many more. For now I would like you to list the contents
     # of your root directory and print them to screen: print( os.listdir( <your directory location> ) )
-
+    root = "data/week06/sp"
+    files = [item for item in os.listdir(root) if re.search('\.png$', item)]
     # From this you should see a list of of your images. But they probably won't appear in
     # alphanumeric order. Let's use the inbuilt python function "sorted" on the output list
     # and print that to screen
-
+    files.sort()
+    print(files)
     # For what we are doing here it's not a big deal, but sometimes this is very important!
     # Okay so we can extract a list of the images in that directory.
     # Now we need to go through that list (for loop) load the images individually, and
@@ -212,15 +235,35 @@ if ex03:
     #   put each channel of the image into another array or list (append)
     #   possibly convert to a numpy array
     #   calculate the statistics
-
+    images = {}
+    for item in files:
+        file = os.path.join(root, item)
+        image = imread(file)
+        image_array = np.array([[np.max(image[:,:,0]), np.min(image[:,:,0]), np.mean(image[:,:,0]), np.std(image[:,:,0])],
+                                [np.max(image[:,:,1]), np.min(image[:,:,1]), np.mean(image[:,:,1]), np.std(image[:,:,1])],
+                                [np.max(image[:,:,2]), np.min(image[:,:,2]), np.mean(image[:,:,2]), np.std(image[:,:,2])]])
+        images.update({item: [image, image_array]})
+    print(images["week05_sp_00.png"])
     # Okay now we have a parameters. View the pdf to see the equations you need to implement.
     # Start with min max normalisation then move to the mu std normalisation.
     # For now we will just normalise a single image for your root directory. I will use
     # week05_sp_00.png
-
+    image = images["week05_sp_00.png"][0]
     # I will also turn the the individual values into arrays
-
+    image_stat = images["week05_sp_00.png"][1]
     # Min Max normalisation = \frac{x-min}{max-min}
+    print(image_stat)
+
+    def min_max_image_normalization(image_input, array_stat):
+        image_norm = np.empty(image_input.shape)
+        for i in range(image_input.shape[2]):
+            image_norm[:, :, i] = (image[:, :, i] - array_stat[i][1]) / (array_stat[i][0] - array_stat[i][1])
+        return image_norm
+
+    image_normalized = min_max_image_normalization(image, image_stat)
+    #print(image_normalized)
+    #imshow(image_normalized)
+    #show()
 
     # Now let's make sure this is actually normalised between 0 and 1 per channel.
     # Hint we want this per channel so you need to specify the axis, and you can specify
@@ -229,7 +272,16 @@ if ex03:
 
     # Mu std normalisation. \frac{X-mu}{std}
 
+    def mu_std_image_normalisation(image_input, array_stat):
+        image_norm = np.empty(image_input.shape)
+        for i in range(image_input.shape[2]):
+            image_norm[:,:,i] = (image_input[:,:,i] - array_stat[i][2]) / array_stat[i][3]
+        return image_norm
+
     # let's check the normalisation values...
+    image_normalized_mu_std = mu_std_image_normalisation(image, image_stat)
+    imshow(image_normalized_mu_std)
+    show()
 
     # You should notice that the normalisation range is different here. We have -x to y
     # which should be centered approximately around zero with a standard deviation of 1.
@@ -242,8 +294,8 @@ if ex03:
   ####### 4. PCA
 """
 if ex04:
-    # The final exercise is based on priciple component analysis (PCA) which you will
-    # try in your own time. I will release the soluton but now that we have used
+    # The final exercise is based on principle component analysis (PCA) which you will
+    # try in your own time. I will release the solution but now that we have used
     # a number of new pythonic tools you should be able to complete the exercise.
     # If you have questions, as always, I am available via email or during my consultation time.
     # In the lecture you were shown a number of uses for PCA, but in this practical you
@@ -255,7 +307,7 @@ if ex04:
     # extract data function from week 04 to the top of this file. Then load the week04_housing.csv
     # file.
 
-    # Create a varaible with the dependent variable
+    # Create a variable with the dependent variable
 
     # Now we need to create a matrix of our independent variables. Let's select:
     # longitude, latitude, housing_median_age, total_rooms, total_bedrooms, population,
@@ -272,7 +324,7 @@ if ex04:
     # Now we have our data we can play with PCA. As always we need to import something.
     # "from sklearn.decomposition import PCA" So we are now using sklearn!
     # Now we need to create the PCA object (PCA is a class), let's select PCA components of 2,
-    # keeping in mind that the componenets need to be <= 7, but 7 doesn't really make
+    # keeping in mind that the components need to be <= 7, but 7 doesn't really make
     # much sense here, we are trying to reduce the dimension. 2 Is just a random number, we'll
     # play with different values later.
     # obj = PCA( n_components=N ) # N = 2 for now
