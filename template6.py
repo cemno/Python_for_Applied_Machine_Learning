@@ -23,8 +23,8 @@ import regex as re
   ####### Preamble
 """
 ex01 = False
-ex02 = False
-ex03 = True
+ex02 = True
+ex03 = False
 ex04 = True
 
 """
@@ -120,9 +120,9 @@ if ex02:
     orientations = 8
     pixels_per_cell = (2, 2)
     cells_per_block = (2, 2)
-    features, hog_normal = hog(test, orientations=orientations, pixels_per_cell=pixels_per_cell,
+    features_normal, hog_normal = hog(test, orientations=orientations, pixels_per_cell=pixels_per_cell,
                                cells_per_block=cells_per_block, visualize=True, feature_vector=False)
-    features, hog_gray = hog(test_gray, orientations=orientations, pixels_per_cell=pixels_per_cell,
+    features_gray, hog_gray = hog(test_gray, orientations=orientations, pixels_per_cell=pixels_per_cell,
                              cells_per_block=cells_per_block, visualize=True, feature_vector=True)
     figure, ((img1, img2), (img3, img4)) = plt.subplots(2, 2, figsize=(8, 8), sharex=True, sharey=True)
     img1.axis('off')
@@ -139,11 +139,11 @@ if ex02:
     # image, can anyone say what the problem with this is?
     # Now how do we use the feature vector output by the function.
     # We currently have feature_vector set to False, what shape does that give us?
-    print(test_gray.shape)
+    print(features_normal.shape)
     # So if we wanted a single feature vector for the whole image, i.e. a representation
     # of the entire image in blocks we can set the feature_vector to True. Try this.
     # What do you think a pitfall of this is? Can you come up with better representation?
-    print(hog_gray.shape)
+    print(features_gray.shape)
     # first let's reset the parameters to the default values but keep feature vector as True.
     # Essentially we have rgb.shape[0]//ppc[0] boxes on the row axis.
     # Then we boxes[rows]*boxes[cols]*orientations (we are negating the cells per block but you
@@ -155,17 +155,21 @@ if ex02:
     # Once you have worked this out, let's split the feature vector up based on that parameter.
     # As feat is a numpy array, we can use the np.array_split( x, number of splits )
     # how many splits do we have?
-
+    numsplits = features_gray.shape[0]/orientations
+    fp = np.array_split(features_gray, numsplits)
+    print(type(fp))
     # this outputs a list of numpy arrays, but we want a numpy matrix?
-
+    fp = np.array(fp)
+    print(fp.shape)
     # Okay so now we want a histogram of all the bins! This is why we needed a matrix.
     # For this we can use the array.sum() function, but we will specify which axis we
     # want to sum along. In this case we want to sum all the values in the rows so that
     # we get a vector of shape (4,). x.sum( axis=0 )
-
+    sf = fp.sum(axis=0) # np.sum(fp)
     # But we want a distribution of each of the bins. So let's divide our histogram by
     # the number of samples...
-
+    df = sf/sf.sum()
+    print(df)
     # So this is our feature vector, what happens if you play with the parameters or
     # use different images? Do this in your own time.
     # Does a more coarse representation give a bitter feature vector?
