@@ -174,7 +174,7 @@ if runex2:
     # Now save this variable versus the dependent variable using savefig...
 
     # So that's how we might go about selecting variables using a visual inspection.
-    # This isn't always possible especially when you consider quadratic relationships or even noisey data.
+    # This isn't always possible especially when you consider quadratic relationships or even noisy data.
     # But it's ALWAYS a good place to start, having a look at your data. If you don't know
     # the properties of your data it's much more difficult to build a good model.
     pass
