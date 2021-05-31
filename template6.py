@@ -18,13 +18,14 @@ from skimage.feature import hog
 import matplotlib.pyplot as plt
 import os
 import regex as re
+from libs.features import extract_lbp_feature
 
 """
   ####### Preamble
 """
 ex01 = False
-ex02 = True
-ex03 = False
+ex02 = False
+ex03 = True
 ex04 = True
 
 """
@@ -188,16 +189,27 @@ if ex02:
     # So now we have to import this library? Try it...
     # Once  you have imported the library let's call the function using the hor_stripe.jpg
     # and the default parameters.
-
+    extract_lbp_feature('data/week06/texture/hor_stripe.jpg')
     # Once you have run it go back to features.py
 
     # You should now be finished the feature extractor. Let's create variables for the
     # main parameters, just use the defaults for now.
+    rad = 1
+    points = 8
+    nbins = 32
+    frange = (0,255) # [0,255]
 
     # Now let's call the feature extractor again using these parameters.
-
+    lbp, edges = extract_lbp_feature('data/week06/texture/hor_stripe.jpg',
+                                              radius = rad,
+                                              npoints = points,
+                                              nbins = nbins,
+                                              range_bins = frange)
     # Now let's plot the histogram of these values.
-
+    plt.figure()
+    plt.hist(lbp, bins = edges, range = frange)
+    plt.title("Histogram of linear binary pattern")
+    plt.show()
     # play with the input values and see what happens, what about different images?
     # Do this in your own time to familiarise yourself with everything.
     pass
@@ -247,6 +259,19 @@ if ex03:
                                 [np.max(image[:,:,1]), np.min(image[:,:,1]), np.mean(image[:,:,1]), np.std(image[:,:,1])],
                                 [np.max(image[:,:,2]), np.min(image[:,:,2]), np.mean(image[:,:,2]), np.std(image[:,:,2])]])
         images.update({item: [image, image_array]})
+    # alternative
+    r, g, b = [], [], []
+    for f in sorted(os.listdir(root)):
+        f = os.path.join(root, f)
+        rgb = imread(f)
+        r.append(f[:, :, 0])
+        g.append(f[:, :, 1])
+        b.append(f[:, :, 2])
+    r = np.array(r)
+    g = np.array(g)
+    b = np.array(b)
+    mn = np.array([r.min(), g.min(), b.min()])
+
     print(images["week05_sp_00.png"])
     # Okay now we have a parameters. View the pdf to see the equations you need to implement.
     # Start with min max normalisation then move to the mu std normalisation.
