@@ -11,43 +11,48 @@
 """
 
 import numpy as np
+import matplotlib.pyplot as plt
 
 
 """
   ####### Preamble
 """
 
-ex01 = False
+ex01 = True
 ex02 = False
 ex03 = False
-ex04 = True
+ex04 = False
 
 """
   ####### 1. Create data
 """
-# if ex01:
+if ex01:
   # We will first create multivariate_normal data using the means and covariances
   # listed in the pdf.
-
+  X0 = np.random.multivariate_normal([0,0], [[1,0], [0,1]], 100)
+  X1 = np.random.multivariate_normal([4,1], [[1,0], [0,1]], 100)
+  X2 = np.random.multivariate_normal([2, 2], [[0.5, 0], [0, 0.5]], 100)
   # now create the data and associated label sets from these subsets
   # D0 = [X0, X1]; using np.vstack
-
-
+  D0 = np.vstack((X0, X1))
+  D1 = np.vstack((X0, X1, X2))
   # L0 = [0, 0, ..., 1,1,...]; using np.zeros, np.ones and np.vstack
-
-
+  L0 = np.vstack((np.zeros(100), np.ones(100)))
   # D1 = [X0, X1, X2]; using np.concatenate along axis 0
-
+  D1 = np.concatenate((X0, X1, X2), axis = 0)
 
   # L0 = [0, 0, ..., 1, 1,..., 2, 2, ...]; using np.concatenate and np.zeros, np.ones, np.ones*2
-
+  L1 = np.concatenate((np.zeros(100), np.ones(100), np.ones(100)*2))
 
   # now let's do the scatter plots of the two different subsets. What do we need to import?
   # First let's plot D0 which is comprised of X0 and X1, use the scatter plot and don't forget
   # to change the colour of each plot...
-
-
+  plt.figure()
+  plt.scatter(X0[:,0], X0[:,1], c = 'red', label = "X0")
+  plt.scatter(X1[:,0], X1[:,1], c = 'green', label = "X1")
+  plt.show()
   # Okay now we have our data for exercise 2 and 3.
+  pass
 
 """
   ####### 2. Our KMeans class
