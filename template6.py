@@ -19,13 +19,15 @@ import matplotlib.pyplot as plt
 import os
 import regex as re
 from libs.features import extract_lbp_feature
+import pandas as pd
+from sklearn.decomposition import PCA
 
 """
   ####### Preamble
 """
 ex01 = False
 ex02 = False
-ex03 = True
+ex03 = False
 ex04 = True
 
 """
@@ -122,9 +124,9 @@ if ex02:
     pixels_per_cell = (2, 2)
     cells_per_block = (2, 2)
     features_normal, hog_normal = hog(test, orientations=orientations, pixels_per_cell=pixels_per_cell,
-                               cells_per_block=cells_per_block, visualize=True, feature_vector=False)
+                                      cells_per_block=cells_per_block, visualize=True, feature_vector=False)
     features_gray, hog_gray = hog(test_gray, orientations=orientations, pixels_per_cell=pixels_per_cell,
-                             cells_per_block=cells_per_block, visualize=True, feature_vector=True)
+                                  cells_per_block=cells_per_block, visualize=True, feature_vector=True)
     figure, ((img1, img2), (img3, img4)) = plt.subplots(2, 2, figsize=(8, 8), sharex=True, sharey=True)
     img1.axis('off')
     img1.imshow(test)
@@ -156,7 +158,7 @@ if ex02:
     # Once you have worked this out, let's split the feature vector up based on that parameter.
     # As feat is a numpy array, we can use the np.array_split( x, number of splits )
     # how many splits do we have?
-    numsplits = features_gray.shape[0]/orientations
+    numsplits = features_gray.shape[0] / orientations
     fp = np.array_split(features_gray, numsplits)
     print(type(fp))
     # this outputs a list of numpy arrays, but we want a numpy matrix?
@@ -166,10 +168,10 @@ if ex02:
     # For this we can use the array.sum() function, but we will specify which axis we
     # want to sum along. In this case we want to sum all the values in the rows so that
     # we get a vector of shape (4,). x.sum( axis=0 )
-    sf = fp.sum(axis=0) # np.sum(fp)
+    sf = fp.sum(axis=0)  # np.sum(fp)
     # But we want a distribution of each of the bins. So let's divide our histogram by
     # the number of samples...
-    df = sf/sf.sum()
+    df = sf / sf.sum()
     print(df)
     # So this is our feature vector, what happens if you play with the parameters or
     # use different images? Do this in your own time.
@@ -197,17 +199,17 @@ if ex02:
     rad = 1
     points = 8
     nbins = 32
-    frange = (0,255) # [0,255]
+    frange = (0, 255)  # [0,255]
 
     # Now let's call the feature extractor again using these parameters.
     lbp, edges = extract_lbp_feature('data/week06/texture/hor_stripe.jpg',
-                                              radius = rad,
-                                              npoints = points,
-                                              nbins = nbins,
-                                              range_bins = frange)
+                                     radius=rad,
+                                     npoints=points,
+                                     nbins=nbins,
+                                     range_bins=frange)
     # Now let's plot the histogram of these values.
     plt.figure()
-    plt.hist(lbp, bins = edges, range = frange)
+    plt.hist(lbp, bins=edges, range=frange)
     plt.title("Histogram of linear binary pattern")
     plt.show()
     # play with the input values and see what happens, what about different images?
@@ -255,18 +257,20 @@ if ex03:
     for item in files:
         file = os.path.join(root, item)
         image = imread(file)
-        image_array = np.array([[np.max(image[:,:,0]), np.min(image[:,:,0]), np.mean(image[:,:,0]), np.std(image[:,:,0])],
-                                [np.max(image[:,:,1]), np.min(image[:,:,1]), np.mean(image[:,:,1]), np.std(image[:,:,1])],
-                                [np.max(image[:,:,2]), np.min(image[:,:,2]), np.mean(image[:,:,2]), np.std(image[:,:,2])]])
+        image_array = np.array(
+            [[np.max(image[:, :, 0]), np.min(image[:, :, 0]), np.mean(image[:, :, 0]), np.std(image[:, :, 0])],
+             [np.max(image[:, :, 1]), np.min(image[:, :, 1]), np.mean(image[:, :, 1]), np.std(image[:, :, 1])],
+             [np.max(image[:, :, 2]), np.min(image[:, :, 2]), np.mean(image[:, :, 2]), np.std(image[:, :, 2])]])
         images.update({item: [image, image_array]})
     # alternative
     r, g, b = [], [], []
-    for f in sorted(os.listdir(root)):
+    for f in sorted([item for item in os.listdir(root) if re.search('\.png$', item)]):
         f = os.path.join(root, f)
+        print(f)
         rgb = imread(f)
-        r.append(f[:, :, 0])
-        g.append(f[:, :, 1])
-        b.append(f[:, :, 2])
+        r.append(rgb[:, :, 0])
+        g.append(rgb[:, :, 1])
+        b.append(rgb[:, :, 2])
     r = np.array(r)
     g = np.array(g)
     b = np.array(b)
@@ -283,16 +287,19 @@ if ex03:
     # Min Max normalisation = \frac{x-min}{max-min}
     print(image_stat)
 
+
     def min_max_image_normalization(image_input, array_stat):
         image_norm = np.empty(image_input.shape)
         for i in range(image_input.shape[2]):
             image_norm[:, :, i] = (image[:, :, i] - array_stat[i][1]) / (array_stat[i][0] - array_stat[i][1])
         return image_norm
 
+
     image_normalized = min_max_image_normalization(image, image_stat)
-    #print(image_normalized)
-    #imshow(image_normalized)
-    #show()
+    print(image_normalized)
+    imshow(image_normalized)
+    show()
+
 
     # Now let's make sure this is actually normalised between 0 and 1 per channel.
     # Hint we want this per channel so you need to specify the axis, and you can specify
@@ -304,8 +311,9 @@ if ex03:
     def mu_std_image_normalisation(image_input, array_stat):
         image_norm = np.empty(image_input.shape)
         for i in range(image_input.shape[2]):
-            image_norm[:,:,i] = (image_input[:,:,i] - array_stat[i][2]) / array_stat[i][3]
+            image_norm[:, :, i] = (image_input[:, :, i] - array_stat[i][2]) / array_stat[i][3]
         return image_norm
+
 
     # let's check the normalisation values...
     image_normalized_mu_std = mu_std_image_normalisation(image, image_stat)
@@ -335,13 +343,33 @@ if ex04:
     # dimensions down to something we can use for machine learning applications. Let's copy the
     # extract data function from week 04 to the top of this file. Then load the week04_housing.csv
     # file.
+    def extract_data(location):
+        data = pd.read_csv(location)
+        print('the shape of the data is:', data.shape)
+        str = ''
+        out = {}
+        for k, val in data.items():  # explain enumerate
+            str += '|{} '.format(k)
+            out[k] = np.array(val)
+        print(str)
+        return out, data.shape[0]
 
+
+    data, numrows = extract_data("data/week05/Practical5/week04_housing.csv")
     # Create a variable with the dependent variable
-
+    Y = data['median_house_value']
     # Now we need to create a matrix of our independent variables. Let's select:
     # longitude, latitude, housing_median_age, total_rooms, total_bedrooms, population,
     # and median_house_value and put them in an (N*7) matrix.
-
+    kys = ['longitude', 'latitude', 'housing_median_age', 'total_rooms', 'total_bedrooms', 'population',
+           'median_income']
+    X = []
+    for k, v in data.items():
+        if k in kys:
+            # print( k, np.isnan( np.sum( v ) ) ) # Uncomment this line to see where the nan values are
+            X.append(v)
+    X = np.array(X).T  # This needs to be transposed back to (N*7)
+    print(X.shape)
     # But we have a problem! There are nan values in this matrix. PCA can't handle nan values
     # so we will remove them. We need two functions here, np.isnan and np.where. isnan locates
     # the nan values in a vector or matrix and where returns the exact location in matrix co-ordinates.
@@ -349,19 +377,23 @@ if ex04:
     # co-ordinates? We really only need the rows. (You could also just remove the offending column but,
     # that kind of defeats the purpose here). You can use np.delete to delete the rows:
     # https://numpy.org/doc/stable/reference/generated/numpy.delete.html
-
+    wnan = np.where(np.isnan(X))
+    print('before delete', wnan)
+    X = np.delete(X, wnan[0], 0)  # don't forget to tell it the axis it is deleting.
+    print('after delete', np.where(np.isnan(X)))
     # Now we have our data we can play with PCA. As always we need to import something.
     # "from sklearn.decomposition import PCA" So we are now using sklearn!
     # Now we need to create the PCA object (PCA is a class), let's select PCA components of 2,
-    # keeping in mind that the components need to be <= 7, but 7 doesn't really make
+    # keeping in mind that the componenets need to be <= 7, but 7 doesn't really make
     # much sense here, we are trying to reduce the dimension. 2 Is just a random number, we'll
     # play with different values later.
     # obj = PCA( n_components=N ) # N = 2 for now
-
+    N = 2
+    obj = PCA(n_components=N)
     # Now we need to fit the object to the X data we created.
-
-    # now let's print the variance "explained_variance_ratio_"
-
+    obj.fit(X)
+    # now let's print the variance
+    print(obj.explained_variance_ratio_)
     # So the first dimension contains 95% of the variance! That's a significant amount.
     # It means that first dimension contains the majority of the information, so this
     # COULD be a good representation. Go back and change N to see what happens.
