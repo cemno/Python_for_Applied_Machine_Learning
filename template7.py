@@ -13,16 +13,17 @@ import sklearn.cluster
 
 import numpy as np
 import matplotlib.pyplot as plt
-import random
+from sklearn.cluster import SpectralClustering
+from sklearn.metrics import completeness_score as skcs
 
 """
   ####### Preamble
 """
 
-ex01 = True
-ex02 = True
+ex01 = False
+ex02 = False
 ex03 = False
-ex04 = False
+ex04 = True
 
 """
   ####### 1. Create data
@@ -141,35 +142,41 @@ if ex02:
     plt.title('X clustering')
     plt.legend()
   plt.show()
+  plt.close()
   # Now what's wrong with what we did? We fit and predicted on the same  data.
   # Go back and Fit with D0 and predict with D1... How does that look?
   # Now we need to evaluate this,  for that we will use
   # from sklearn.metrics import completeness_score as skcs
   # Which is a metric designed expressly for clustering.
   # You will need to reshape the L vectors to be np.shape = (N,)
-
+  accuracy = skcs(L0.reshape((-1,)), Yu)
+  print("The accuracy of clustering was " + repr(round(accuracy*100)) + "%.")
 
 
 """
   ####### 3. Spectral Clustering with sklearn
 """
-# if ex03:
+if ex03:
   # This exercise is just a simple homework exercise to get you familiar with reading the
   # sklearn documentation. We are after Spectral clustering (urls are in the pdf). This
   # is just another method of clustering and actually can use KMeans. We will use this method
   # of clustering with the "discretize" variable. You'll find that in the documentation.
   # You'll also need to import the appropriate library, I'll let you look it up.
   # Create the object
-
+  spectral_cluster = SpectralClustering(n_clusters=2, assign_labels='discretize')
 
   # Fit and predict the data (D0 or D1 whichever)
-
+  Y = spectral_cluster.fit_predict(D0)
 
   # Plot the result
-
+  plt.figure()
+  for label in Y:
+    plt.scatter(D0[Y==label,0], D0[Y==label,1])
+  plt.show()
 
   # Calculate the metric.
-
+  accuracy = skcs(L0.reshape((-1,)), Y)
+  print("The accuracy of clustering was " + repr(round(accuracy*100)) + "%.")
 
 
 """
