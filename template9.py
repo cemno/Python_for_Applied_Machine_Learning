@@ -17,14 +17,14 @@ import libs.metrics as met
 """
   ####### Preamble
 """
-#parser = argparse.ArgumentParser(description= 'Parsing the command line', add_help=True)
-#parser.add_argument('--whatrun', action = 'store', required=True)
-#flags = parser.parse_args()
+parser = argparse.ArgumentParser(description= 'Parsing the command line', add_help=True)
+parser.add_argument('--whatrun', action = 'store', required=True)
+flags = parser.parse_args()
 
 ex01 = False
-ex02 = True
+ex02 = False
 ex03 = False
-"""
+
 if flags.whatrun == 'ex01':
     ex01 = True
 elif flags.whatrun == 'ex02':
@@ -33,7 +33,7 @@ elif flags.whatrun == 'ex03':
     ex03 = True
 else:
     print("Not a variable that can be set.")
-"""
+
 """
   ####### 1. Outliers
 """
