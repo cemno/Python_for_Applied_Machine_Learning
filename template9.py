@@ -56,7 +56,7 @@ if ex01:
   # Okay, so the first problem you should see is that there are nan values in there.
   # Let's remove them.
   nloc = np.where(np.isnan(X))
-  X = numpy.delete(X, nloc[0], axis = 0)
+  X = np.delete(X, nloc[0], axis = 0)
   print('After nan', np.shape(X))
 
 
@@ -66,7 +66,7 @@ if ex01:
 
   # So there is still an issue, let's delete the infinite values
   nloc = np.where(np.isinf(X))
-  X = numpy.delete(X, nloc[0], axis=0)
+  X = np.delete(X, nloc[0], axis=0)
   print('After inf', np.shape(X))
 
   # calculate the mean and covariance again.

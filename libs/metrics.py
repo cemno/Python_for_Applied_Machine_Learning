@@ -47,7 +47,7 @@ class f1score():
     return P, R, F1
 
   # 4. Create a threshold f1score calculator I will use __call__()
-  def __call__(self, labels, scores, nthresh = 20):
+  def __call__(self, labels, scores, nthresh = 20, verbosity = True):
     # create the thresholds (min and max of scores)
     thresholds = np.linspace(scores.min(), scores.max(), nthresh)
 
@@ -70,7 +70,7 @@ class f1score():
     plt.plot(R[bestth], P[bestth], 'r*')
     plt.xlabel( 'Recall' )
     plt.ylabel( 'Precision' )
-    plt.title( 'Precision Recall Plot - F1 Score {:0.03f}'.forma(F1[bestth]) )
+    plt.title( 'Precision Recall Plot - F1 Score {:0.03f}'.format(F1[bestth]) )
     # let's plot these values if verbosity is true
 
     # return the best values.
