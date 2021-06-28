@@ -20,9 +20,9 @@ from sklearn.metrics import completeness_score as skcs
   ####### Preamble
 """
 
-ex01 = False
-ex02 = False
-ex03 = False
+ex01 = True
+ex02 = True
+ex03 = True
 ex04 = True
 
 """
@@ -149,6 +149,8 @@ if ex02:
   # from sklearn.metrics import completeness_score as skcs
   # Which is a metric designed expressly for clustering.
   # You will need to reshape the L vectors to be np.shape = (N,)
+  print(D0.shape)
+  print(L0)
   accuracy = skcs(L0.reshape((-1,)), Yu)
   print("The accuracy of clustering was " + repr(round(accuracy*100)) + "%.")
 

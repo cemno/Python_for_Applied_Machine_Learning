@@ -26,8 +26,8 @@ from sklearn.decomposition import PCA
   ####### Preamble
 """
 ex01 = False
-ex02 = False
-ex03 = False
+ex02 = True
+ex03 = True
 ex04 = True
 
 """
