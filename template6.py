@@ -300,7 +300,6 @@ if ex03:
     imshow(image_normalized)
     show()
 
-
     # Now let's make sure this is actually normalised between 0 and 1 per channel.
     # Hint we want this per channel so you need to specify the axis, and you can specify
     # two axis at once as a tuple i.e. axis=(0,1) to calculate along the first and second
