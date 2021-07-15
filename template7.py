@@ -37,6 +37,8 @@ if ex01:
   # now create the data and associated label sets from these subsets
   # D0 = [X0, X1]; using np.vstack
   D0 = np.vstack([X0, X1])
+  print(D0)
+  print(D0.shape)
   D1 = np.vstack([X0, X1, X2])
   # L0 = [0, 0, ..., 1,1,...]; using np.zeros, np.ones and np.vstack
   L0 = np.vstack([np.zeros(100), np.ones(100)])
@@ -151,8 +153,8 @@ if ex02:
   # You will need to reshape the L vectors to be np.shape = (N,)
   print(D0.shape)
   print(L0)
-  accuracy = skcs(L0.reshape((-1,)), Yu)
-  print("The accuracy of clustering was " + repr(round(accuracy*100)) + "%.")
+  #accuracy = skcs(L0.reshape((-1,)), Yu)
+  #print("The accuracy of clustering was " + repr(round(accuracy*100)) + "%.")
 
 
 """
