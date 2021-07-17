@@ -1,10 +1,10 @@
 """
 assignment
 """
+import skimage.color
 from skimage.io import imsave, imread, imshow, show, imshow_collection
 import pickle
 import random
-
 from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
@@ -230,12 +230,15 @@ kmeans_yellow = KMeans(1)
 random.seed(1234)
 kmeans_all = KMeans(6, random_state=0) # Whats the optimal cluster number?! 6 Clusters first time yellow/orange gets separated from red
 
+## Changing colour space
+train_data_combined = skimage.color.convert_colorspace(train_data_combined, fromspace= "rgb", tospace= "xyz")
+
 
 ## Fitting data
-kmeans_background.fit(picture_background["train"])
-print(kmeans_background.cluster_centers_)
-kmeans_red.fit(picture_red["train"])
-print(kmeans_red.cluster_centers_)
+# kmeans_background.fit(picture_background["train"])
+# print(kmeans_background.cluster_centers_)
+# kmeans_red.fit(picture_red["train"])
+# print(kmeans_red.cluster_centers_)
 #kmeans_yellow.fit(picture_yellow["train"])
 #print(kmeans_yellow.cluster_centers_)
 
@@ -251,15 +254,19 @@ print(kmeans_all.cluster_centers_)
 #Y_red = kmeans_red.predict(picture_background["validation"])
 
 Y_all = kmeans_all.predict(validation_data_combined)
-print(Y_all)
+#print(Y_all)
 
-print(np.where(Y_all == 0)[0].size, np.where(Y_all == 1)[0].size)
+#print(np.where(Y_all == 0)[0].size, np.where(Y_all == 1)[0].size)
 
 if pie_chart:
   labels_all = kmeans_all.labels_
   print(labels_all)
   labels=list(labels_all)
-  centroid=kmeans_all.cluster_centers_
+  centroid = kmeans_all.cluster_centers_
+  print("centroids")
+  print(centroid)
+  centroid = skimage.color.convert_colorspace(centroid, fromspace="hsv", tospace="xyz")
+  centroid = centroid * 255
   print(centroid)
 
   percent=[]
@@ -296,17 +303,32 @@ if plot_cluster:
 
 #1280,720,3 -> 921600,3
 # Read in image and transfrom to mask
-img_input = imread("data/week04/week03_rgb.png")
-height = img_input[0,:,0].size
-width = img_input[:,0,0].size
-colors = img_input[0,0,:].size
+#img_input = imread("data/week04/week03_rgb.png")
+for img_input in picture_SP["train"]:
+  img_transformed = img_input.reshape(-1, img_input[0, 0, :].size)
+  img_transformed = skimage.color.convert_colorspace(img_transformed, fromspace="rgb", tospace="xyz")
+  print(img_transformed.shape)
+  index_classes = kmeans_all.predict(img_transformed)
+  msk_zero = np.zeros(img_transformed.shape, dtype=int)
+  for i in range(msk_zero.shape[0]):
+    if index_classes[i] == 5:
+      msk_zero[i] = np.array([255, 255, 0], dtype=int)
+    elif index_classes[i] == 6:
+      msk_zero[i] = np.array([255, 0, 0], dtype=int)
+    else:
+      msk_zero[i] = np.array([0, 255, 0], dtype=int)
+  msk = msk_zero.reshape(img_input.shape)
+  imshow(msk, vmin=0, vmax=255)
+  plt.figure()
+  plt.imshow(msk, vmin=0, vmax=255)
+  plt.imshow(img_input)
+  plt.show()
 
-img_transformed = img_input.reshape(-1,colors)
-print(img_transformed.shape)
-index_classes = kmeans_all.predict(img_transformed)
-for cluster in range(np.min(index_classes), np.max(index_classes)+1):
-  # zuweisen der einzelnen Klassen und umschreiben eines zero arrays (alles was nicht rot oder geld ist ist ja immer klasse 0)
-  pass
+
+#for cluster in range(np.min(index_classes), np.max(index_classes)+1):
+#  msk_zero
+  # zuweisen der einzelnen Klassen und umschreiben eines zero arrays (alles was nicht rot oder gelb ist ist ja immer klasse 0)
+
 #img_mask_transformed = np.where(index_classes == 0, img_transformed[], img_transformed[:,[0,0,0]])
 #print(img_mask_transformed.shape)
 # Now what's wrong with what we did? We fit and predicted on the same  data.
