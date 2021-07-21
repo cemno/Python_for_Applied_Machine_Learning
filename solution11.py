@@ -20,7 +20,7 @@ from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 from sklearn.metrics import precision_recall_curve as prc
 
-from libs.features_solution import BoVW, extract_full_hog_features, extract_hog_matrix, extract_lbp_feature
+from libs.features import BoVW, extract_full_hog_features, extract_hog_matrix, extract_lbp_feature
 """
   ####### Preamble
 """
@@ -77,7 +77,7 @@ for t in sorted( os.listdir( root ) ):
 # plot to ensure the sizes of each
 for k in Xt.keys():
   print( k, len( Xt[k] ), len( Xe[k] ) )
-
+print(Xt.items())
 """
   ####### HOG-BoVW-SVM
 """
