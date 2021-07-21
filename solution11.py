@@ -77,10 +77,11 @@ for t in sorted( os.listdir( root ) ):
 # plot to ensure the sizes of each
 for k in Xt.keys():
   print( k, len( Xt[k] ), len( Xe[k] ) )
-print(Xt.items())
+
 """
   ####### HOG-BoVW-SVM
 """
+
 if ex01:
   # Use last week as a guide and train a BoVW object based on the training information.
   # We will use the same orientation and other hog parameters too.

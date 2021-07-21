@@ -2,12 +2,16 @@
 assignment
 """
 import skimage.color
+import sklearn.compose
 from skimage.io import imsave, imread, imshow, show, imshow_collection
 import pickle
 import random
 from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.cluster import KMeans
+from sklearn.metrics import accuracy_score
+from sklearn.metrics import confusion_matrix
+from sklearn.metrics import precision_recall_curve as prc
 import pandas as pd
 from sklearn.linear_model import LinearRegression
 
@@ -90,148 +94,19 @@ for fname in ['data/PAML_data/Q2_BG_dict.pkl',  'data/PAML_data/Q2_SP_dict.pkl']
 		print("The number of entries for each set is:", len(data['train']), len(data['validation']), len(data['evaluation']))
 		print("The size of each entry is:", data['train'][0].shape, data['validation'][0].shape, data['evaluation'][0].shape)
 
-"""
-#solution 8 would test and train with gausians...would be more efficient???
-
-x = data['picture_background']
-print(x.shape)
-y = data['picture_background']
-print(y.shape)
-
-# Now split these into a training and testing and evaluation data set.
-# not a very efficient solution
-# 1. import random in your import area.
-# 2. Decide on a training/testing split:
-# 70% train red, 70% background, 30% test!
-# First Split 50-50. Then second split 50-50!!! 25% training and evaluation
-split = int( 0.5 * numrows )
-# 3. Create a "traininglist" of randomly assigned indexes that will select data from
-# both x and y. To do this we will use random.sample( A, B ), where A is the full list of
-# numbers we can select from: range(0, 20640) in this case. And B is the number of
-# values you are going to select out of A. Try it now
-trainlist = random.sample( range( 0, numrows), split )
-# Now we need to create the evaluation list.
-# Basically you will just go through range( numrows ) and if an integer is not in
-# trainlist you will put it in evallist. Hopefully you see that this is not very
-# efficient..
-testlist = []
-for i in range(numrows):
-    if i not in trainlist:
-        testlist.append(i)
-# Would this do the same thing:
-# testlist1 = [i for i in range( numrows ) if i not in trainlist]
-# if testlist == testlist1:
-#   print( 'test lists equal' )
-# So now we have a list of indexs that corrospond to the training and evaluation
-# samples. Let's use these indexes on x and y to create the subsets.
-x_train = x[trainlist]
-y_train = y[trainlist]
-print( x_train.shape, y_train.shape )
-x_test = x[testlist]
-y_test = y[testlist]
-print( x_test.shape, y_test.shape )
-# Now we have the data to train a model and the data to evaluate how good our model is.
-# Let's plot these two sub sets individually.
-plt.figure()
-plt.scatter( x_train, y_train )
-plt.xlabel( 'median income' )
-plt.ylabel( 'median house value' )
-plt.title( 'training data' )
-plt.tight_layout()
-plt.savefig( 'ex3training.pdf' )
-
-plt.figure()
-plt.scatter( x_test, y_test )
-plt.xlabel( 'median income' )
-plt.ylabel( 'median house value' )
-plt.title( 'testing data' )
-plt.tight_layout()
-plt.savefig( 'ex3testing.pdf' )
-print("red")
-
-"""
-###Number 1. kmeans
-class KMeans_self():
-  # Next we need to create the __init__ function that takes as input the number of
-  # clusters (n_clusters), and the max iterations (imax) set to 100 as default.
-  # We could add a distance metric here too, do you know what it would do?
-  def __init__(self, n_clusters, imax=100):
-    # instantiate the inputs
-    self.n_clusters = n_clusters
-    self.imax = imax
-
-  # Now let's create a the Euchlidean distance calculator (euchlid) that takes some data (X)
-  # and a center value (self.C[c]) as input. This is based on (sum( (X-C)^2 ))^(1/2.) where the resulting vector
-  # will have the same number of columns as the input X.
-
-  # alex: with the distance measure euclidean distance (L2), also called the sum of squared differences,
-  # we will measure between centers. The manhattan distance would rather be for
-  # sparse data, so here the decision is to first use the euclidean distance. The Manhattan distance is an
-  # approximation to Euclidean distance and cheaper to compute
-  # Translation invariant.
-  def euchlid(self, X, c):
-    diff = X - c
-    sqrd = diff ** 2
-    smmd = np.sum(sqrd, axis=1)
-    return np.sqrt(smmd)
-
-  # Next is the main part of the code, this is based on the algorithm in the pdf.
-  # See if you can work it out from the sudo code supplied. But call the function "fit"
-  def fit(self, X):
-    # first we need to randomly create the cluster centers.
-    # random dpoint selection
-    cstart = np.random.randint( 0, X.shape[0], self.n_clusters )
-    self.C = X[cstart,:]
-    ### You could also do:
-    #xmin = X.min(axis=0)
-    #xmax = X.max(axis=0)
-    #c0 = np.random.uniform(xmin[0], xmax[0], (self.n_clusters, 1))
-    #c1 = np.random.uniform(xmin[1], xmax[1], (self.n_clusters, 1))
-    #self.C = np.hstack((c0, c1))
-    # Now we need to iterate around the EM algorithm for the number of self.imax
-    for _ in range(self.imax):
-      # create an empty data matrix
-      dist = np.zeros((X.shape[0], self.n_clusters))
-      # calculate the distances per center.
-      for i in range(self.n_clusters):
-        dist[:, i] = self.euchlid(X, self.C[i])
-      # assign the data to one of the centroids. Remember we want the minimum distance,
-      # between the datapoint and the Centroid.
-      X_assign = np.argmin(dist, axis=1)
-      # Just in case we want to use the distance metric later let's calculate the
-      # total distance of the new assignments to the it's assigned center.
-      #dist_metric = np.sum(dist[:, X_assign])
-      # Now the final step, let's update the self.C locations. We will use the mean
-      # of the assigned points to that cluster.
-      for i in range(self.n_clusters):
-        self.C[i, :] = np.mean(X[X_assign == i, :], axis=0)
-
-  # Finally let's create a predict method too. This is basically just the distance
-  # calculation, and assignment of an input matrix X
-  def predict(self, X):
-    # create an empty distance matrix
-    dist = np.zeros((X.shape[0], self.n_clusters))
-    # calculate the distances
-    for i in range(self.n_clusters):
-      dist[:, i] = self.euchlid(X, self.C[i])
-    # return the assignments.
-    return np.argmin(dist, axis=1)
 
 # Arranging data # Addition: no need to stack, doing a kmeans with one cluster is good enough, sorting data to the correct labels later on
 #train_data = np.vstack([picture_background["train"], picture_red["train"]])
 #print(train_data.shape)
 # Creating k_means classes
-train_data_combined = np.vstack([picture_background["train"], picture_red["train"], picture_yellow["train"]])
-validation_data_combined = np.vstack([picture_background["validation"], picture_red["validation"], picture_yellow["validation"]])
 
-kmeans_background = KMeans(1)
-kmeans_red = KMeans(1)
-kmeans_yellow = KMeans(1)
-random.seed(1234)
-kmeans_all = KMeans(6, random_state=0) # Whats the optimal cluster number?! 6 Clusters first time yellow/orange gets separated from red
+train_data_combined = np.vstack([picture_background["train"], picture_red["train"], picture_yellow["train"]])
+
+kmeans_all = KMeans(10) # Whats the optimal cluster number?! 6 Clusters first time yellow/orange gets separated from red
 
 ## Changing colour space
-train_data_combined = skimage.color.convert_colorspace(train_data_combined, fromspace= "rgb", tospace= "xyz")
+colourspace = "hsv"
+train_data_combined = skimage.color.convert_colorspace(train_data_combined, fromspace= "rgb", tospace=colourspace)
 
 
 ## Fitting data
@@ -244,7 +119,7 @@ train_data_combined = skimage.color.convert_colorspace(train_data_combined, from
 
 # Fit data to satisfy _n_threads in kmeans object, which handles errors if no fitting was done
 kmeans_all.fit(train_data_combined)
-print(kmeans_all.cluster_centers_)
+#print(kmeans_all.cluster_centers_)
 # Change cluster_centroids to the ones calculated by each KMeans object for each Set
 #kmeans_all.cluster_centers_ = np.vstack([kmeans_background.cluster_centers_, kmeans_red.cluster_centers_])
 
@@ -253,7 +128,27 @@ print(kmeans_all.cluster_centers_)
 #Y_background = kmeans_background.predict(picture_background["validation"])
 #Y_red = kmeans_red.predict(picture_background["validation"])
 
-Y_all = kmeans_all.predict(validation_data_combined)
+#Y_all = kmeans_all.predict(validation_data_combined)
+validation_data_red = skimage.color.convert_colorspace(picture_red["validation"], fromspace= "rgb", tospace=colourspace)
+red_validation = kmeans_all.predict(validation_data_red)
+validation_data_yellow = skimage.color.convert_colorspace(picture_yellow["validation"], fromspace= "rgb", tospace=colourspace)
+yellow_validation = kmeans_all.predict(validation_data_yellow)
+
+def cluster_with_most_occurrences(classification_array):
+  occurrences = {}
+  for num in np.unique(classification_array):
+    # Fill dictionary with occurrences per class
+    occ = classification_array.tolist().count(num)
+    occurrences.update({num: occ})
+  print(occurrences)
+  # Class with most occurrences - This is debatable but probably best for low cluster numbers.
+  max_occ =  max(zip(occurrences.values(), occurrences.keys()))[1]
+  return max_occ.astype(int)
+
+# Choosing cluster with the most red occurrences
+red_cluster =  cluster_with_most_occurrences(red_validation)
+yellow_cluster = cluster_with_most_occurrences(yellow_validation)
+print("Red cluster: {}\nYellow cluster: {}".format(red_cluster, yellow_cluster))
 #print(Y_all)
 
 #print(np.where(Y_all == 0)[0].size, np.where(Y_all == 1)[0].size)
@@ -265,7 +160,7 @@ if pie_chart:
   centroid = kmeans_all.cluster_centers_
   print("centroids")
   print(centroid)
-  centroid = skimage.color.convert_colorspace(centroid, fromspace="hsv", tospace="xyz")
+  centroid = skimage.color.convert_colorspace(centroid, fromspace=colourspace, tospace="rgb")
   centroid = centroid * 255
   print(centroid)
 
@@ -306,14 +201,14 @@ if plot_cluster:
 #img_input = imread("data/week04/week03_rgb.png")
 for img_input in picture_SP["train"]:
   img_transformed = img_input.reshape(-1, img_input[0, 0, :].size)
-  img_transformed = skimage.color.convert_colorspace(img_transformed, fromspace="rgb", tospace="xyz")
+  img_transformed = skimage.color.convert_colorspace(img_transformed, fromspace="rgb", tospace=colourspace)
   print(img_transformed.shape)
   index_classes = kmeans_all.predict(img_transformed)
   msk_zero = np.zeros(img_transformed.shape, dtype=int)
   for i in range(msk_zero.shape[0]):
-    if index_classes[i] == 5:
+    if index_classes[i] == yellow_cluster:
       msk_zero[i] = np.array([255, 255, 0], dtype=int)
-    elif index_classes[i] == 6:
+    elif index_classes[i] == red_cluster:
       msk_zero[i] = np.array([255, 0, 0], dtype=int)
     else:
       msk_zero[i] = np.array([0, 255, 0], dtype=int)
@@ -325,18 +220,31 @@ for img_input in picture_SP["train"]:
   plt.show()
 
 
-#for cluster in range(np.min(index_classes), np.max(index_classes)+1):
-#  msk_zero
-  # zuweisen der einzelnen Klassen und umschreiben eines zero arrays (alles was nicht rot oder gelb ist ist ja immer klasse 0)
+validation_data_bg_red = np.vstack([picture_background["evaluation"], picture_red["evaluation"]])
+validation_data_bg_red = sklearn.color.convert(validation_data_bg_red, fromspace = "rgb", tospace = colourspace)
+len_bg = len(picture_background["evaluation"])
+len_red = len(picture_red["evaluation"])
+eval_labels = np.vstack([np.zeros((len_bg)), np.array])
 
-#img_mask_transformed = np.where(index_classes == 0, img_transformed[], img_transformed[:,[0,0,0]])
-#print(img_mask_transformed.shape)
-# Now what's wrong with what we did? We fit and predicted on the same  data.
-# Go back and Fit with D0 and predict with D1... How does that look?
-# Now we need to evaluate this,  for that we will use
-# from sklearn.metrics import completeness_score as skcs
-# Which is a metric designed expressly for clustering.
-# You will need to reshape the L vectors to be np.shape = (N,)
+validation_data_combined = np.vstack([picture_background["evaluation"], picture_red["evaluation"], picture_yellow["evaluation"]])
+validation_data_combined = sklearn.color.convert(validation_data_combined, fromspace = "rgb", tospace = colourspace)
+yellow = len(picture_yellow["evaluation"])
 
-#acc = skcs(L0.reshape((-1,)), Y)
-#print(acc)
+
+# now the f1score stuff.
+p, r, t = prc(eval_labels, scr_lin)
+# print( 't', len( t ) )
+f1 = 2*p*r/(p+r+0.0000001)
+am = np.argmax( f1 )
+plt.figure()
+plt.plot()
+plt.plot( r, p )
+plt.plot( r[am], p[am], 'r*' )
+plt.title( 'Linear Precision Recall: F1-score of {}'.format( f1[am] ) )
+plt.show()
+
+# calculate the two accuracy scores. and confusion matrices
+acc_lin = accuracy_score( eval_labels, pred_lin )
+print( 'Accuracy of the linear SVM based BoVW is: {:0.04f}'.format( acc_lin ) )
+print( confusion_matrix( eval_labels, pred_lin ) )
+

@@ -8,6 +8,7 @@ from matplotlib import pyplot as plt
 import numpy as np
 from sklearn.decomposition import PCA
 from sklearn.linear_model import LinearRegression
+from sklearn.metrics import precision_recall_curve as prc
 
 
 pca = True

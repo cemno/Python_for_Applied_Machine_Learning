@@ -19,7 +19,7 @@ from sklearn.metrics import accuracy_score
 from sklearn.metrics import confusion_matrix
 from sklearn.model_selection import train_test_split
 
-from libs.features_solution import BoVW, extract_full_hog_features, extract_hog_matrix, extract_lbp_feature
+from libs.features import BoVW, extract_full_hog_features, extract_hog_matrix, extract_lbp_feature
 """
   ####### Preamble
 """
