@@ -199,40 +199,59 @@ if plot_cluster:
 #1280,720,3 -> 921600,3
 # Read in image and transfrom to mask
 #img_input = imread("data/week04/week03_rgb.png")
-for img_input in picture_SP["train"]:
-  img_transformed = img_input.reshape(-1, img_input[0, 0, :].size)
-  img_transformed = skimage.color.convert_colorspace(img_transformed, fromspace="rgb", tospace=colourspace)
-  print(img_transformed.shape)
-  index_classes = kmeans_all.predict(img_transformed)
-  msk_zero = np.zeros(img_transformed.shape, dtype=int)
-  for i in range(msk_zero.shape[0]):
-    if index_classes[i] == yellow_cluster:
-      msk_zero[i] = np.array([255, 255, 0], dtype=int)
-    elif index_classes[i] == red_cluster:
-      msk_zero[i] = np.array([255, 0, 0], dtype=int)
-    else:
-      msk_zero[i] = np.array([0, 255, 0], dtype=int)
-  msk = msk_zero.reshape(img_input.shape)
-  imshow(msk, vmin=0, vmax=255)
-  plt.figure()
-  plt.imshow(msk, vmin=0, vmax=255)
-  plt.imshow(img_input)
-  plt.show()
 
+# for img_input in picture_SP["train"]:
+#   img_transformed = img_input.reshape(-1, img_input[0, 0, :].size)
+#   img_transformed = skimage.color.convert_colorspace(img_transformed, fromspace="rgb", tospace=colourspace)
+#   print(img_transformed.shape)
+#   index_classes = kmeans_all.predict(img_transformed)
+#   msk_zero = np.zeros(img_transformed.shape, dtype=int)
+#   for i in range(msk_zero.shape[0]):
+#     if index_classes[i] == yellow_cluster:
+#       msk_zero[i] = np.array([255, 255, 0], dtype=int)
+#     elif index_classes[i] == red_cluster:
+#       msk_zero[i] = np.array([255, 0, 0], dtype=int)
+#     else:
+#       msk_zero[i] = np.array([0, 255, 0], dtype=int)
+#   msk = msk_zero.reshape(img_input.shape)
+#   imshow(msk, vmin=0, vmax=255)
+#   plt.figure()
+#   plt.imshow(msk, vmin=0, vmax=255)
+#   plt.imshow(img_input)
+#   plt.show()
 
-validation_data_bg_red = np.vstack([picture_background["evaluation"], picture_red["evaluation"]])
-validation_data_bg_red = sklearn.color.convert(validation_data_bg_red, fromspace = "rgb", tospace = colourspace)
+# Create evaluation labels for background and red data
+evaluation_data_bg_red = np.vstack([picture_background["evaluation"], picture_red["evaluation"]])
+evaluation_data_bg_red = skimage.color.convert_colorspace(evaluation_data_bg_red, fromspace = "rgb", tospace = colourspace)
 len_bg = len(picture_background["evaluation"])
 len_red = len(picture_red["evaluation"])
-eval_labels = np.vstack([np.zeros((len_bg)), np.array])
+eval_labels_bg_red = np.concatenate([np.zeros(len_bg, dtype = int), np.ones(len_red, dtype = int)])
 
-validation_data_combined = np.vstack([picture_background["evaluation"], picture_red["evaluation"], picture_yellow["evaluation"]])
-validation_data_combined = sklearn.color.convert(validation_data_combined, fromspace = "rgb", tospace = colourspace)
-yellow = len(picture_yellow["evaluation"])
+# Extend evaluation labels with labels for yellow dataset
+evaluation_data_all = np.vstack([picture_background["evaluation"], picture_red["evaluation"], picture_yellow["evaluation"]])
+evaluation_data_all = skimage.color.convert_colorspace(evaluation_data_all, fromspace = "rgb", tospace = colourspace)
+len_yellow = len(picture_yellow["evaluation"])
+eval_labels_all = np.concatenate([eval_labels_bg_red, np.full(len_yellow, 2)])
 
+# Create labels based on prediction on the evaluation dataset for background and red
+pred_eval_bg_red = kmeans_all.predict(evaluation_data_bg_red)
+for i, cluster in enumerate(pred_eval_bg_red):
+  tmp = np.zeros(pred_eval_bg_red.shape, dtype=int)
+  if cluster == red_cluster:
+    tmp[i] = 1
+pred_eval_bg_red = tmp
+
+pred_eval_all = kmeans_all.predict(evaluation_data_all)
+for i, cluster in enumerate(pred_eval_all):
+  tmp = np.zeros(pred_eval_all.shape, dtype=int)
+  if cluster == red_cluster:
+    tmp[i] = 1
+  elif cluster == yellow_cluster:
+    tmp[i] = 2
+pred_eval_all = tmp
 
 # now the f1score stuff.
-p, r, t = prc(eval_labels, scr_lin)
+p, r, t = prc(eval_labels_bg_red, pred_eval_bg_red)
 # print( 't', len( t ) )
 f1 = 2*p*r/(p+r+0.0000001)
 am = np.argmax( f1 )
@@ -240,11 +259,11 @@ plt.figure()
 plt.plot()
 plt.plot( r, p )
 plt.plot( r[am], p[am], 'r*' )
-plt.title( 'Linear Precision Recall: F1-score of {}'.format( f1[am] ) )
+plt.title( 'Background and red data Precision Recall: F1-score of {}'.format( f1[am] ) )
 plt.show()
 
 # calculate the two accuracy scores. and confusion matrices
-acc_lin = accuracy_score( eval_labels, pred_lin )
-print( 'Accuracy of the linear SVM based BoVW is: {:0.04f}'.format( acc_lin ) )
-print( confusion_matrix( eval_labels, pred_lin ) )
+acc_lin = accuracy_score( eval_labels_all, pred_eval_all )
+print( 'Accuracy of the bg, red and yellow data is: {:0.04f}'.format( acc_lin ) )
+print( confusion_matrix( eval_labels_all, pred_eval_all ) )
 
