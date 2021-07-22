@@ -96,10 +96,10 @@ if mlp:
   # Extract and normalise the training and evaluation data (similar to above) but for
   # local binary patterns. i.e. no need to train a BoVW classifier. The evaluation set
   # should be a matrix not just a single feature vector.
-  Xt = np.vstack([picture_BG["train"], picture_SP["train"]])
+  Xt = {"BG": picture_BG["train"], "SP": picture_SP["train"]}
   train_labels = []
   firstfile = True
-  for i, v in enumerate( Xt ):
+  for i, (k,v) in enumerate( Xt.items() ):
     for f in v:
       train_labels.append( i )
       feat, _ = extract_lbp_feature( f,
@@ -119,10 +119,10 @@ if mlp:
   st = X.std( axis=0 )
   Xnorm = (X-mu)/st
   # eval data
-  Xe = np.vstack([picture_BG["validation"], picture_SP["validation"]])
+  Xe = {"BG": picture_BG["validation"], "SP": picture_SP["validation"]}
   firstfile = True
   eval_labels = []
-  for i, v in enumerate( Xe ):
+  for i, (k,v) in enumerate( Xe.items() ):
     for f in v:
       eval_labels.append( i )
       feat, _ = extract_lbp_feature( f,
@@ -139,7 +139,7 @@ if mlp:
         Xeval = np.vstack( (Xeval, feat) )
 
   # Train an MLP in exactly the same manner as the previous exercise.
-  num_classes = len( Xt )
+  num_classes = len( Xt.keys() )
   hidden_layers = flags.hidenparams + [num_classes]
   clf = MLPClassifier( hidden_layer_sizes=hidden_layers, # 32 hidden 6 classes
                         activation='relu', # default activation function (non linear)
