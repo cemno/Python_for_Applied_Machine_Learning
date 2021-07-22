@@ -156,7 +156,7 @@ if ex01:
 
 
 """
-  ####### 2. LBP-SVM
+  ####### 2. LBP-MLP
 """
 if ex02:
   # Extract and normalise the training and evaluation data (similar to above) but for
