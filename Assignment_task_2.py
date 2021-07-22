@@ -156,3 +156,15 @@ if mlp:
   acc = accuracy_score( eval_labels, pred )
   print( 'Evaluation accuracy of the MLP using LBP is: {:0.04f}'.format( acc ) )
   print( confusion_matrix( eval_labels, pred ) )
+  # now the f1score stuff
+  p, r, t = prc(eval_labels, pred)
+  # print( 't', len( t ) )
+  f1 = 2 * p * r / (p + r + 0.0000001)
+  am = np.argmax(f1)
+  plt.figure()
+  plt.plot()
+  plt.plot(r, p)
+  plt.plot(r[am], p[am], 'r*')
+  plt.title('Background and red data Precision Recall: F1-score of {}'.format(f1[am]))
+  plt.show()
+
