@@ -20,7 +20,7 @@ data_loc = "data/PAML_data"
 img_path = "data/data_assignment/test_images" # Path for input image to create mask from
 # if outputpath is None: #create folder mask, else use supplied outputpath (do nothing)
 output_path = os.path.join(img_path, "mask") # Optional, can be same or different
-verbose = False
+verbose = True
 colourspace = "hsv"
 # KMeans
 solution_1 = True
