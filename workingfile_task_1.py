@@ -2,6 +2,7 @@
 assignment
 """
 import os
+from time import time
 import skimage.color
 from skimage.io import imsave, imread
 from matplotlib import pyplot as plt
@@ -19,13 +20,13 @@ data_loc = "data/PAML_data"
 img_path = "data/data_assignment/test_images" # Path for input image to create mask from
 # if outputpath is None: #create folder mask, else use supplied outputpath (do nothing)
 output_path = os.path.join(img_path, "mask") # Optional, can be same or different
-verbose = True
+verbose = False
 colourspace = "hsv"
 # KMeans
-solution_1 = False
+solution_1 = True
 only_maximum_cluster = True
 # Multivariate Gaussian
-solution_2 = True
+solution_2 = False
 
 # first the data will be loaded.
 #data for number one:
@@ -33,6 +34,7 @@ picture_background, picture_red, picture_yellow = data_task_1(data_loc, verbose=
 
 
 if solution_1:
+    start = time()
     # Create training data
     train_data_combined = np.vstack([picture_background["train"], picture_red["train"], picture_yellow["train"]])
     train_data_bg_red = np.vstack([picture_background["train"], picture_red["train"]])
@@ -107,7 +109,7 @@ if solution_1:
     plt.plot( r, p )
     plt.plot( r[am], p[am], 'r*' )
     plt.title( 'Background and red data Precision Recall: F1-score of {:0.04f}'.format( f1[am] ) )
-    plt.show()
+    #plt.show()
 
     # calculate the two accuracy scores. and confusion matrices
     acc_lin = accuracy_score( eval_labels_bg_red, pred_eval_bg_red )
@@ -119,6 +121,9 @@ if solution_1:
     print( 'Accuracy of the bg, red and yellow data is: {:0.04f}'.format( acc_lin ) )
     print( confusion_matrix( eval_labels_all, pred_eval_all ) )
 
+    end = time()
+    dtime = end - start
+    print("Durchlauf dauert: {:0.02f}s".format(dtime))
     # Write KMeans objects to hard drive
     # with open(os.path.join(data_loc, "kmeans_all.pkl"), "wb") as file:
     #     pickle.dump(kmeans_all, file = file)
@@ -127,6 +132,7 @@ if solution_1:
 
 
 if solution_2:
+    start = time()
     # Create train data
     train_data_bg = picture_background["train"]
     train_data_red =picture_red["train"]
@@ -150,11 +156,7 @@ if solution_2:
     mvg_bg.train(train_data_bg)
     mvg_red = MultivariateGaussian()
     mvg_red.train(train_data_red)
-    # print('MVG')
-    # print('Original X0 parameters\n', X0mu, '\n', X0cv)
-    # print('Calculated mvg0 parameters\n', mvg0.mu, '\n', mvg0.sigma)
-    # print('Original X1 parameters\n', X1mu, '\n', X1cv)
-    # print('Calculated mvg1 parameters\n', mvg1.mu, '\n', mvg1.sigma)
+
 
     loglike = np.zeros((validation_data_bg_red.shape[0], 2))
     loglike[:, 0] = mvg_bg.log_likelihood(validation_data_bg_red)
@@ -203,6 +205,9 @@ if solution_2:
 
     p, r, t = prc(eval_labels_bg_red, classified)
     print("Evaluation data set:\nPrecision: {:0.04f}, Recall: {:0.04f}\n".format(p[am], r[am]))
+    end = time()
+    dtime = end - start
+    print("Durchlauf dauert: {:0.02f}s".format(dtime))
     # with open(os.path.join(data_loc, "mvg.pkl"), "wb") as file:
     #      dict = {"mvg_bg": mvg_bg, "mvg_red": mvg_red}
     #      pickle.dump(dict, file = file)

@@ -66,7 +66,6 @@ def create_mask(img, cluster_methode, red_cluster, yellow_cluster=None, coloursp
         yellow = red
 
     # Transform image to 2D Array (instead of 3D) and convert colourspace if necessary
-    print("test")
     img_transformed = img.reshape(-1, img[0, 0, :].size)
     if not colourspace == "rgb":
         img_transformed = convert_colorspace(img_transformed, fromspace="rgb", tospace=colourspace)
