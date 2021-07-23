@@ -203,6 +203,6 @@ if solution_2:
 
     p, r, t = prc(eval_labels_bg_red, classified)
     print("Evaluation data set:\nPrecision: {:0.04f}, Recall: {:0.04f}\n".format(p[am], r[am]))
-    with open(os.path.join(data_loc, "mvg.pkl"), "wb") as file:
-         dict = {"mvg_bg": mvg_bg, "mvg_red": mvg_red}
-         pickle.dump(dict, file = file)
+    # with open(os.path.join(data_loc, "mvg.pkl"), "wb") as file:
+    #      dict = {"mvg_bg": mvg_bg, "mvg_red": mvg_red}
+    #      pickle.dump(dict, file = file)

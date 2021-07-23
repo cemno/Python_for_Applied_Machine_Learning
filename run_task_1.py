@@ -16,9 +16,7 @@ parser.add_argument( '--whatrun', action='store', required=True )
 parser.add_argument( '--dataloc', action='store', required=True)
 parser.add_argument( '--input_img_path', action='store', required=True)
 parser.add_argument( '--output_path', action='store', required=False, default = None)
-parser.add_argument( '--only_max', action='store', default=True)
-parser.add_argument( '--colourspace', action='store', default="hsv")
-parser.add_argument( '--verbosity', action='store', default=True )
+parser.add_argument( '--verbosity', action='store', default=False )
 flags = parser.parse_args()
 
 kmeans_bg_red = False
@@ -34,9 +32,9 @@ if flags.whatrun == "mvg":
     mvg = True
 
 verbose = flags.verbosity
-only_maximum_cluster = flags.only_max
+only_maximum_cluster = True
 data_loc = flags.dataloc
-colourspace = flags.colourspace
+colourspace = "hsv" #has to be changed with the kmeans object
 img_path = flags.input_img_path
 if flags.output_path is None:
     output_path = os.path.join(img_path, "mask")
