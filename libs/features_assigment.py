@@ -2,9 +2,10 @@
   This is a file that will do some basic lbp stuff in a library file.
   Import your libraries directly below this string.
 """
+import matplotlib.pyplot as plt
 from skimage.feature import local_binary_pattern as lbp
 import numpy as np
-from skimage.io import imread
+from skimage.io import imshow, show
 from skimage.color import rgb2gray
 from skimage.feature import hog
 from sklearn.cluster import KMeans
@@ -29,15 +30,28 @@ def extract_lbp_feature(file,  # the string location of the image
 #        hog cells per
 #       ALSO: visualize=False and feature_vector=False
 # Output: feature vector of size (-1, orientations)
-def extract_hog_matrix(f, o, p, c):
+def extract_hog_matrix(img, o, p, c, visualize = False):
   # convert to greyscale
-  gry = rgb2gray(f)
+  gry = rgb2gray(img)
   # calculate the HOG representation
-  feat = hog(gry, orientations = o,
-             pixels_per_cell = p,
-             cells_per_block = c,
-             visualize = False,
-             feature_vector = False)
+  if visualize:
+    feat, map = hog(gry, orientations=o,
+               pixels_per_cell=p,
+               cells_per_block=c,
+               visualize=True,
+               feature_vector=False)
+    plt.figure
+    plt.subplot(211)
+    plt.imshow(gry)
+    plt.subplot(212)
+    plt.imshow(map)
+    show()
+  else:
+    feat = hog(gry, orientations=o,
+               pixels_per_cell=p,
+               cells_per_block=c,
+               visualize=False,
+               feature_vector=False)
   # return a feature of shape (-1, orientations)
   return feat.reshape((-1, o)) # m,8, h/p*w/p*c*0 (8 is default in script 10)
 
@@ -60,9 +74,21 @@ def extract_full_hog_features(X, o, p, c):
         firstfile = False
       else:
         fullvec = np.vstack((fullvec, feat))
-  # Return the full vecetor
+  # Return the full vector
   return fullvec
 
+def extract_class_hog_features(X, o, p, c):
+    classvec = {}
+    for t, v, in X.items():
+        firstfile = True
+        for f in v:
+            feat = extract_hog_matrix(f, o, p, c)
+            if firstfile:
+                classvec[t] = feat
+                firstfile = False
+            else:
+                classvec[t] = np.vstack((classvec[t], feat))
+    return classvec
 
 # A kmeans based BoVW classifier
 # Create the BoVW class

@@ -81,7 +81,6 @@ for k in Xt.keys():
 """
   ####### HOG-BoVW-SVM
 """
-
 if ex01:
   # Use last week as a guide and train a BoVW object based on the training information.
   # We will use the same orientation and other hog parameters too.
@@ -102,7 +101,7 @@ if ex01:
       train_labels.append( i )
       feat = extract_hog_matrix( f, orient, ppc, cpb )
       feat = bovw.predict( feat )
-      feat = feat.reshape( (1,-1) ) # ensure it is a horizontal matrix
+      feat = feat.reshape( (1,-1) ) # ensure it is a horizontal matrix (1,8)
       if firstfile:
         X = feat
         firstfile = False

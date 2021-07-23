@@ -14,7 +14,7 @@ from sklearn.model_selection import train_test_split
 from sklearn.metrics import accuracy_score
 from sklearn.metrics import precision_recall_curve as prc
 
-from libs.features_solution import extract_hog_matrix, extract_full_hog_features, extract_class_hog_features, BoVW
+from libs.features import extract_hog_matrix, extract_full_hog_features, extract_class_hog_features, BoVW
 from libs.classifiers_solution import templatematch
 # The following is a guide only. Read through what I have written in the pdf and see if you can
 # come up with your own solution. Mine isn't overly efficient, it's just one solution.

@@ -93,7 +93,7 @@ def extract_full_hog_features(X, o, p, c):
         firstfile = False
       else:
         fullvec = np.vstack((fullvec, feat))
-  # Return the full vecetor
+  # Return the full vector
   return fullvec
 
 # Extract the hog information per class for the average histogram calculator.
